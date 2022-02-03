@@ -276,7 +276,7 @@ class lab2Week extends Component{
   render(){
     return (
       <View>
-        <TextInput placeholder='Add to list' onChangeText={value => this.setState({temp_item: value})}
+        <TextInput placeholder='Add to awesome list' onChangeText={value => this.setState({temp_item: value})}
           value={this.state.temp_item}/>
         <Button onPress={() => {this.addItemColorToList();}}
           title="Add"/>
