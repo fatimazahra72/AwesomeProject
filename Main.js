@@ -148,7 +148,7 @@ class Main extends Component {
             console.log("Post has been successfully updated");
             this.getData();
         }else if(response.status === 400){
-            console.log("Error: Could not update post")
+            console.log("Error: Could not update post");
         }else{
             throw 'Something went wrong';
         }

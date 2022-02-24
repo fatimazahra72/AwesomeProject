@@ -18,7 +18,7 @@ class SignIn extends Component {
     };
   }
 
-  signUpAccount = () =>{
+  signUpAccount = () => {
     // Obtains the state of the input fields and specifies it was the information that will be sent to 
     // the server for registration 
     let to_send = {
@@ -37,9 +37,14 @@ class SignIn extends Component {
       body: JSON.stringify(to_send)
     }) // Displays an alert message when the account is registered with the correct data from input fields
     .then((response) => {
-      Alert.alert("Account Registered");
-      this.signUpAccount
-    })
+      if(response.status === 200){
+        return response.json()
+    }else if(response.status === 400){
+        throw 'Account not registered';
+    }else{
+        throw 'Something went wrong';
+    }
+})
     .catch((error) => {
       console.log(error);
     })
