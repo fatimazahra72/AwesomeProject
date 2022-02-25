@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import LogIn from './LogIn';
 import SignUp from './SignUp';
+import logo from './assets/logo.png';
 
 class Home extends Component {
     render() {
       return (
       <View style={styles.body}>
-
+      <img src={logo} style={{width: 80, height: 80, marginTop: 40, marginLeft: 270}}/>  
         <Text style={styles.name}> WELCOME TO SPACEBOOK </Text>
          {/* The title for the page - add the background style to view */}
   
@@ -35,7 +36,7 @@ class Home extends Component {
     color: '#FFFFFF',
     fontSize: 20, 
     marginLeft: 80, 
-    marginTop: 220,
+    marginTop: 60,
     fontWeight: 'bold',
   },
   logInAccess : {
@@ -44,7 +45,7 @@ class Home extends Component {
     color: '#FFFFFF', 
     fontSize: 27, 
     marginLeft: 75,
-    marginTop: 100,
+    marginTop: 90,
     borderRadius: 30,
     fontWeight: 'bold',
     justifyContent : 'center',
@@ -60,7 +61,7 @@ class Home extends Component {
     fontSize: 22, 
     marginLeft: 75,
     marginTop: 50,
-    borderRadius: 30,
+    borderRadius: 100,
     fontWeight: 'bold',
     justifyContent : 'center',
     textAlign : 'center',

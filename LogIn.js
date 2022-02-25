@@ -2,62 +2,54 @@ import React, { Component } from 'react';
 import { Text, TextInput, View, StyleSheet, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Main from './Main';
-
-
+import logo from './assets/logo.png';
 
 class LogIn extends Component {
-  constructor(props){
-    super(props);
+constructor(props){
+  super(props);
 
-    // Sets the state of the fields that will be entered by the user for logging into their account e.g., 
-    // email address and password
-    this.state = {
-    isLoading: true,
-    newUser: [],
-    id : '',
-    email : 'Waqas.Anwar@mmu.ac.uk',
-    password : 'waqas123'
-    };
-  }
+  // Sets the state of the fields that will be entered by the user for logging into their account e.g., 
+  // email address and password
+  this.state = {
+  isLoading: true,
+  newUser: [],
+  id : '',
+  email : 'Waqas.Anwar@mmu.ac.uk',
+  password : 'waqas123'
+  };
+}
 
-  logInAccount = async () => {
-     // Obtains the state of the input fields and specifies it was the information that will be sent to 
-     // the server for signing in to user account 
-    // let to_send = {
-    //   email: this.state.email,
-    //   password: this.state.password
-    // };
-
-    // This code fetches the URL in which the user can log into their account - 
-    // the details will be collected from the server   
-    return fetch("http://localhost:3333/api/1.0.0/login",{
-      method: 'POST', // Uses the POST method as the user wants to log in
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(this.state)
-    }) 
-    // Sends an alert message if the user has entered the correct details matching to a user 
-    // ID and then user is logged in
-    .then((response) => {
-      if(response.status === 200){
-          return response.json()
-      }else if(response.status === 400){
-          throw 'Invalid email or password';
-      }else{
-          throw 'Something went wrong';
-      }
+logInAccount = async () => {
+  // This code fetches the URL in which the user can log into their account - 
+  // the details will be collected from the server   
+  return fetch("http://localhost:3333/api/1.0.0/login",{
+    method: 'POST', // Uses the POST method as the user wants to log in
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(this.state)
+  }) 
+  // Sends an alert message if the user has entered the correct details matching to a user 
+  // ID and then user is logged in
+  .then((response) => {
+    if(response.status === 200){
+      return response.json()
+    }else if(response.status === 400){
+      throw 'Invalid email or password';
+    }else{
+      throw 'Something went wrong';
+    }
+})
+.then(async (responseJson) => {
+  console.log(responseJson);
+  await AsyncStorage.setItem('@session_id', responseJson.id);
+  await AsyncStorage.setItem('@session_token', responseJson.token);
+  this.props.navigation.navigate("Main");
+})
+.catch((error) => {
+  console.log(error);
   })
-  .then(async (responseJson) => {
-          console.log(responseJson);
-          await AsyncStorage.setItem('@session_id', responseJson.id);
-          await AsyncStorage.setItem('@session_token', responseJson.token);
-          this.props.navigation.navigate("Main");
-  })
-  .catch((error) => {
-    console.log(error);
-    })
-  }
+}
 
   render() {
     return (
@@ -65,6 +57,7 @@ class LogIn extends Component {
 
     { /* Sets the title of the social media */ }
     <Text style={styles.name}> Spacebook </Text>
+    <img src={logo} style={{width: 40, height: 40, marginTop: -10, marginLeft: 365}}/>  
 
     { /* Sets the title of the page */ }
     <Text style={styles.title}> Account Log In </Text>
@@ -89,7 +82,7 @@ class LogIn extends Component {
     details are correct and if the details are correct then a user will be logged as the account exists
     on the server, providing the user with a log in a token */}
     <TouchableOpacity> 
-         <Text onPress={() => this.logInAccount()} style={styles.logInButton} > LOG IN </Text>
+      <Text onPress={() => this.logInAccount()} style={styles.logInButton} > LOG IN </Text>
     </TouchableOpacity>
 
     </View>

@@ -177,15 +177,17 @@ class Main extends Component {
     }else{
       // if (this.state.isLoading){
       return (
-        <View>
-          <Text> WELCOME </Text> 
-          <Text style={styles.title4}> POST: </Text>
+        <View style={styles.body}>
+          <Text style={styles.name}> WELCOME </Text> 
 
-      <TouchableOpacity> 
-      <Text style={styles.post} onPress={() => this.props.navigation.navigate('Log Out')}> LOG OUT </Text>
+      <TouchableOpacity>  
+      <Text style={styles.logOutButton} onPress={() => this.props.navigation.navigate('Log Out')}> LOG OUT </Text>
       </TouchableOpacity>
-      <TextInput placeholder='Enter Your Post:' style={{fontSize: 19, backgroundColor: '#fafa75', width: 350, height: 40, marginLeft: 40, 
-      marginTop: 10, borderWidth: 2.5, borderColor: '#FFFFFF'}}
+
+      <Text style={styles.message}> What's your mind? You can share a post now with your friends! </Text> 
+
+      <TextInput placeholder='Enter Your Post:' style={{fontSize: 24, backgroundColor: '#b8c427', width: 350, height: 60, marginLeft: 40, 
+      marginTop: 45, borderWidth: 4, borderColor: '#FFFFFF'}}
       value={this.state.post} onChangeText={value => this.setState({post: value})}/>
 
       <TouchableOpacity> 
@@ -196,21 +198,20 @@ class Main extends Component {
           data = {this.state.postData}
           renderItem={({item}) => (
           <View>
-              <Text style={{height:100, backgroundColor: '#fafa75', color: 'black'}}> Post: {item.text}
-              </Text>
-              <Text style={{height:100, backgroundColor: '#fafa75', color: 'black'}}> User: {item.email}
-              </Text>
+            <Text style={{height:100, width:300,backgroundColor: '#dfeb4d', color: 'black', textAlign: 'center', marginTop: 50, 
+            marginLeft: 65, fontSize: 18}}> Post: {item.text}
+            </Text>
 
-        <TouchableOpacity> 
-        <Text onPress={() => this.removePost(item.post_id)} style={styles.post} > DELETE </Text>
-        </TouchableOpacity>
-
-        <TextInput placeholder='Enter Update Post:' style={{fontSize: 19, backgroundColor: 'orange', width: 350, height: 40, marginLeft: 40, 
-        marginTop: 10, borderWidth: 2.5, borderColor: '#FFFFFF'}}
+        <TextInput placeholder='Edit Post:' style={{fontSize: 30, backgroundColor: '#e4ed79', width: 350, height: 40, marginLeft: 40, 
+        marginTop: 30, borderWidth: 4, borderColor: '#FFFFFF'}}
         value={this.state.post2} onChangeText={value => this.setState({post2: value})}/>
 
         <TouchableOpacity> 
-        <Text onPress={() => this.updatePost(item.post_id)} style={styles.post} > update </Text>
+        <Text onPress={() => this.updatePost(item.post_id)} style={styles.editPostButton} > EDIT POST </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity> 
+        <Text onPress={() => this.removePost(item.post_id)} style={styles.deletePostButton} > DELETE POST </Text>
         </TouchableOpacity>
             </View>
         )}
@@ -224,19 +225,87 @@ class Main extends Component {
 
 
 const styles = StyleSheet.create({
-    post : {
-        fontSize: 32,
-        color: '#FFFFFF',
-        backgroundColor: '#81CD2A',
-        width: 160,
-        height: 60, 
-        fontWeight: 'bold',
-        borderWidth:  3,  
-        borderColor:  '#e3e327',
-        marginLeft: 135,
-        marginTop: 30,
-        textAlign: 'center'
-      },
+  body: {
+  backgroundColor: '#60BEB0',
+  flex:  1,
+  display: 'flex',
+},
+name : {
+  color: '#033329',
+  fontSize: 26, 
+  marginTop: 100,
+  fontWeight: 'bold',
+  textAlign: 'center',
+},
+message: {
+  color: '#FFFFFF',
+  fontSize: 28, 
+  marginTop: 25,
+  fontWeight: 'bold',
+  textAlign: 'center',
+  fontSize: 19, 
+  backgroundColor: '#0e8269',
+  width: 350, 
+  height: 70,
+  borderWidth: 4,  
+  borderColor: '#e3e327',
+  marginLeft: 40,
+  fontStyle: 'italic',
+},
+post: {
+  fontSize: 26,
+  color: '#FFFFFF',
+  backgroundColor: '#81CD2A',
+  width: 160,
+  height: 50, 
+  fontWeight: 'bold',
+  borderWidth:  4,  
+  borderColor:  '#e3e327',
+  marginLeft: 135,
+  marginTop: 30,
+  textAlign: 'center'
+  },
+logOutButton: {
+  fontSize: 16,
+  color: '#FFFFFF',
+  backgroundColor: '#08fc00',
+  width: 90,
+  height: 30, 
+  fontWeight: 'bold',
+  borderWidth:  3,  
+  borderColor:  '#e3e327',
+  marginLeft: 320,
+  marginTop: -100,
+  textAlign: 'center',
+  justifyContent: 'center',
+},
+editPostButton : {
+  fontSize: 20,
+  color: '#FFFFFF',
+  backgroundColor: '#25e849',
+  width: 120,
+  height: 40, 
+  fontWeight: 'bold',
+  borderWidth:  4,  
+  borderColor:  '#e3e327',
+  marginLeft: 40,
+  marginTop: 30,
+  textAlign: 'center'
+},
+deletePostButton: {
+  fontSize: 20,
+  color: '#FFFFFF',
+  backgroundColor: 'red',
+  width: 120,
+  height: 60, 
+  fontWeight: 'bold',
+  borderWidth:  4,  
+  borderColor:  '#e3e327',
+  marginLeft: 270,
+  marginTop: -50,
+  textAlign: 'center',
+}
+
 });
 
 export default Main;
