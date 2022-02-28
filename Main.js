@@ -18,8 +18,8 @@ class Main extends Component {
       post: '',
       post2: '',
       post_id: '',
-       id: '',
-       email:'',
+      id: '',
+      email:'',
     }
   }
   

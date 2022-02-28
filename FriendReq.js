@@ -8,7 +8,7 @@ class FriendRequest extends Component {
     super(props);
     this.state = {
       isLoading: true,
-      friendsData : [],
+      friendsRequests : [],
       user_givenname: '',
       user_familyname: '',
       email: '',
@@ -122,6 +122,7 @@ return fetch("http://localhost:3333/api/1.0.0/friendrequests/"+ user_id, {
 }
 
 render() {
+
   if (this.state.isLoading){
     return (
       <View
@@ -134,27 +135,27 @@ render() {
           width: 100,
         }}>
         </View>
+      
     );
     }else{
+      if (this.state.isLoading){
       return (
         <View>
           <Text> FRIEND REQUESTS </Text> 
-
-          <Text value={this.state.friendrequests} > FRIEND REQUESTS </Text> 
-        data = {this.state.friendsData}
-        renderItem={({item}) => (
+        <FlatList
+          data = {this.state.friendsRequests}
+          renderItem={({item}) => (
           <View>
-          <Text style={{height:100, backgroundColor: '#fafa75', color: 'black'}}> Outstanding Friend Requests: {item.user_givenname} {item.user_familyname}
-          </Text>
-            
+              <Text style={{height:100, backgroundColor: '#fafa75', color: 'black'}}> Outstanding Friend Requests: {item.user_givenname} {item.user_familyname}
+              </Text>
+
       <TouchableOpacity> 
-      <Text onPress={() => this.acceptFriends(item.user_id)} style={styles.post} > Accept friend request </Text>
+      <Text onPress={() => this.acceptFriends()} style={styles.post} > Add friends </Text>
       </TouchableOpacity> 
 
       <TouchableOpacity> 
-      <Text onPress={() => this.rejectFriend(item.user_id)} style={styles.post} > Reject friend request </Text>
+      <Text onPress={() => this.rejectFriend()} style={styles.post} > Add friends </Text>
       </TouchableOpacity> 
-            
           </View>
         )}
           keyExtractor={(item,index) => item.user_givenname}/> 

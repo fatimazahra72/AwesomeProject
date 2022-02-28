@@ -30,7 +30,7 @@ function TabNavigator() {
 const styles = StyleSheet.create({
 tab : {
     fontSize: 40, 
-    backgroundColor: '#30524D', 
+    backgroundColor: 'white', 
     width: 350, 
     height: 40, 
     marginLeft: 40, 
