@@ -7,6 +7,8 @@ import FriendRequest from './FriendRequest';
 import home from './assets/home.png';
 import friends from './assets/friendsRequest.png';
 import addFriends from './assets/addFriends.png';
+import edit from './assets/edit.png';
+import ProfileEdit from './ProfileEdit';
 
 const Tab = createBottomTabNavigator();
 function TabNavigator() {
@@ -14,15 +16,19 @@ function TabNavigator() {
     <Tab.Navigator intitialRouteName="Main" style={styles.tab}>
         <Tab.Screen name="Main" component={Main}
         options={{
-            tabBarIcon: () => (<Image source={home} style={{width: 40, height: 40}}
+            tabBarIcon: () => (<Image source={home} style={{width: 35, height: 35, fontSize: 12}}
         />) }} />
-        <Tab.Screen name="Add Friends" component={Friends} 
+        <Tab.Screen name="Search Friends" component={Friends} 
          options={{
-            tabBarIcon: () => (<Image source={addFriends} style={{width: 40, height: 40}}
+            tabBarIcon: () => (<Image source={addFriends} style={{width: 35, height: 35, fontSize: 12}}
         />) }} />
         <Tab.Screen name="Friend Requests" component={FriendRequest} 
          options={{
-            tabBarIcon: () => (<Image source={friends} style={{width: 40, height: 40}}
+            tabBarIcon: () => (<Image source={friends} style={{width: 35, height: 35, fontSize: 12}}
+        />) }} />
+         <Tab.Screen name="Profile Edit" component={ProfileEdit} 
+         options={{
+            tabBarIcon: () => (<Image source={edit} style={{width: 35, height: 35, fontSize: 12}}
         />) }} />
     </Tab.Navigator>
     );

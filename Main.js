@@ -7,6 +7,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Friends from './Friends';
 import TabNavigation from './TabNavigation';
+import { Camera } from 'expo-camera';
 
 class Main extends Component {
   constructor(props){
@@ -158,6 +159,42 @@ class Main extends Component {
       })
   }
 
+  // takePicture = async() => {
+  //   if(this.camera){
+  //     const options = {quality: 0.5, 
+  //       base64: true,
+  //     onPictureSaved : (data) => this.sendToServer(data) 
+  //   };
+  //    await this.camera.takePictureAsync(options);
+  //    console.log(data.uri);
+  //   }
+  // }
+
+  // sendToServer = async (data) => { 
+  //   const id = await AsyncStorage.getItem('@session_id');
+  //   const token = await AsyncStorage.getItem('@session_token');
+
+  //   let res = await fetch(data.base64);
+  //   let blob = await res.blob();
+
+  //   return fetch ("http://localhost:3333/api/1.0.0/user/" + id + "/photo", {
+  //     method: "POST",
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'X-Authorization': token
+  //     },
+  //     body: blob
+  //   })
+  //   .then((response) => {
+  //     console.log("Picture added", response);
+  //   })
+  //   .catch((error) => {
+  //     console.log(error);
+  //   })
+  // }
+
+  
+
   render() {
 
     if (this.state.isLoading){
@@ -194,6 +231,29 @@ class Main extends Component {
       <Text onPress={() => this.newPost()} style={styles.post} > POST NOW </Text>
       </TouchableOpacity>
 
+      {/* <Camera
+        style = {styles.camera}
+        type = {this.state.type}
+        ref = {ref => this.camera = ref}
+        >
+          <View style = {styles.buttonContainer}>
+            <TouchableOpacity 
+            style = {styles.button}
+            onPress={() => {
+              this.takePicture(); 
+            }}>
+            <Text style = {styles.text}> </Text>
+            </TouchableOpacity>
+          </View>
+        </Camera>
+
+        <Image 
+        source = {{
+          uri: path_to_image,
+          headers: {"X-Authorization" : token}
+        }} /> */}
+
+
         <FlatList
           data = {this.state.postData}
           renderItem={({item}) => (
@@ -218,6 +278,7 @@ class Main extends Component {
           keyExtractor={(item,index) => item.post_id.toString()}/> 
 
         </View>
+
       );
      }
     }

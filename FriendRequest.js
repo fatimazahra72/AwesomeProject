@@ -9,10 +9,8 @@ class FriendRequest extends Component {
     this.state = {
       isLoading: true,
       friendsData : [],
-      user_givenname: '',
-      user_familyname: '',
-      email: '',
-      password: '',
+      first_name: '',
+      last_name: '',
       id: '',
       user_id: '',
       email:'',
@@ -51,11 +49,11 @@ getData = async () => {
   .then((responseJson) => {
     this.setState({
       isLoading: false,
-      friendsRequests: responseJson
+      friendsData: responseJson
     })
   })
   .catch((error) => {
-      console.log(error);
+    console.log(error);
   })
 }
 
@@ -74,14 +72,11 @@ return fetch("http://localhost:3333/api/1.0.0/friendrequests/"+ user_id, {
       'Content-Type': 'application/json',
       'X-Authorization': token
     },
-    method: 'POST',// Uses the POST method as the user wants to log in
+    method: 'POST',
   })
-  // Sends an alert message if the user has entered the correct details matching to a user 
-  // ID and then user is logged in
 .then((response) => {
     if(response.status === 200){
         console.log("Accepted the friend request");
-        // this.getData();
     }else if(response.status === 401){
         console.log("Error: No more friend requests to be accepted")
     }else{
@@ -101,15 +96,11 @@ return fetch("http://localhost:3333/api/1.0.0/friendrequests/"+ user_id, {
       'Content-Type': 'application/json',
       'X-Authorization': token
     },
-    method: 'DELETE',// Uses the POST method as the user wants to log in
+    method: 'DELETE',
   })
-  // Sends an alert message if the user has entered the correct details matching to a user 
-  // ID and then user is logged in
 .then((response) => {
     if(response.status === 200){
-        //return response.json()
-        console.log("Accepted the friend request");
-      //  this.getData();
+        console.log("Friend request has been rejected");
     }else if(response.status === 401){
         console.log("Error: No more friend requests to be accepted")
     }else{
@@ -137,47 +128,77 @@ render() {
     );
     }else{
       return (
-        <View>
-          <Text> FRIEND REQUESTS </Text> 
-
-          <Text value={this.state.friendrequests} > FRIEND REQUESTS </Text> 
+        <View style={styles.body}>
+          <Text style={styles.name}> YOUR OUTSTANDING FRIEND REQUESTS </Text> 
+        <FlatList
         data = {this.state.friendsData}
         renderItem={({item}) => (
           <View>
-          <Text style={{height:100, backgroundColor: '#fafa75', color: 'black'}}> Outstanding Friend Requests: {item.user_givenname} {item.user_familyname}
+          <Text style={{height:100, width: 320, height: 80, backgroundColor: '#858713', color: 'black', marginTop: 80, fontSize: 26, marginLeft: 55}}> 
+          Incoming Friend Requests: {item.first_name} {item.last_name}
           </Text>
-            
+
       <TouchableOpacity> 
-      <Text onPress={() => this.acceptFriends(item.user_id)} style={styles.post} > Accept friend request </Text>
+      <Text onPress={() => this.acceptFriends(item.user_id)} style={styles.acceptFriendButton} > Accept Request </Text>
       </TouchableOpacity> 
 
       <TouchableOpacity> 
-      <Text onPress={() => this.rejectFriend(item.user_id)} style={styles.post} > Reject friend request </Text>
-      </TouchableOpacity> 
-            
+      <Text onPress={() => this.rejectFriend(item.user_id)} style={styles.rejectFriendButton} > Reject Request  </Text>
+      </TouchableOpacity>  
           </View>
         )}
-          keyExtractor={(item,index) => item.user_givenname}/> 
+         keyExtractor={(item,index) => item.user_givenname} /> 
         </View>
       );
      }
-    }
   }
+}
 
 const styles = StyleSheet.create({
-    post : {
-        fontSize: 32,
-        color: '#FFFFFF',
-        backgroundColor: '#81CD2A',
-        width: 160,
-        height: 60, 
-        fontWeight: 'bold',
-        borderWidth:  3,  
-        borderColor:  '#e3e327',
-        marginLeft: 135,
-        marginTop: 30,
-        textAlign: 'center'
-      },
+body: {
+  backgroundColor: '#60BEB0',
+  flex:  1,
+  display: 'flex',
+},
+name : {
+  color: '#033329',
+  fontSize: 22, 
+  marginTop: 60,
+  marginLeft: 80,
+  fontWeight: 'bold',
+  textAlign: 'center',
+  borderWidth:  3,  
+  borderColor: '#e3e327',
+  backgroundColor:  '#0e8269',
+  width: 280,
+  height: 70,
+},
+acceptFriendButton : {
+  fontSize: 20,
+  color: '#FFFFFF',
+  backgroundColor: '#25e849',
+  width: 130,
+  height: 70, 
+  fontWeight: 'bold',
+  borderWidth:  4,  
+  borderColor:  '#e3e327',
+  marginLeft: 230,
+  marginTop: 40,
+  textAlign: 'center'
+},
+rejectFriendButton : {
+  fontSize: 20,
+  color: '#FFFFFF',
+  backgroundColor: 'red',
+  width: 100,
+  height: 70, 
+  fontWeight: 'bold',
+  borderWidth:  4,  
+  borderColor:  '#e3e327',
+  marginLeft: 55,
+  marginTop: -70,
+  textAlign: 'center'
+},
 });
 
 export default FriendRequest;
