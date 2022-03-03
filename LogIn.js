@@ -14,7 +14,7 @@ constructor(props){
   isLoading: true,
   newUser: [],
   id : '',
-  email : 'Waqas.Anwar@mmu.ac.uk',
+  email : 'Waqaaas.Anwar@mmu.ac.uk',
   password : 'waqas123'
   };
 }

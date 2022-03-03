@@ -198,6 +198,10 @@ render(){
        <TouchableOpacity>
             <Text onPress={()=> this.updatePassword()} style={styles.passwordButton}> Update Email Address </Text>
         </TouchableOpacity>
+
+        <TouchableOpacity> 
+          <Text  onPress={() => this.props.navigation.navigate('Camera')}> Take A Picture to Upload a Profile Picture </Text>
+        </TouchableOpacity>
         </View>
         )
     }

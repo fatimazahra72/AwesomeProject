@@ -67,33 +67,6 @@ const value = await AsyncStorage.getItem('@session_token');
   }
 };
 
-// addFriends = async (user_id) => {
-// const id = await AsyncStorage.getItem('@session_id');
-// const token = await AsyncStorage.getItem('@session_token');
-// return fetch("http://localhost:3333/api/1.0.0/user/"+ user_id +"/friends", {    
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'X-Authorization': token,
-//     },
-//     method: 'POST',// Uses the POST method as the user wants to log in
-//   })
-//   // Sends an alert message if the user has entered the correct details matching to a user 
-//   // ID and then user is logged in
-// .then((response) => { 
-//   if(response.status === 200){
-//     console.log("Friend request has been submitted");
-//       this.getData()
-//   }else if(response.status === 401){
-//       console.log("Error: Could not add friend")
-//   }else if (response.status=== 403){
-//     console.log("Something went wrong");
-//     }
-// })
-//   .catch((error) => {
-//     console.log(error);
-//   })
-// }
-
 addFriends = async (user_id) => {
   const id = await AsyncStorage.getItem('@session_id');
   const token = await AsyncStorage.getItem('@session_token');
@@ -153,7 +126,7 @@ addFriends = async (user_id) => {
         renderItem={({item}) => (
       <View>
       <Text style={{height:20, width: 200, backgroundColor: '#858713', color: 'black', marginTop: 20, marginLeft: 110}}> 
-      User Name: {item.user_givenname} {item.user_familyname}
+        User Name: {item.user_givenname} {item.user_familyname}
       </Text>
             
       <TouchableOpacity> 

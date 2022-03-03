@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Button } from 'react-native';
+import {View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FlatList } from 'react-native-gesture-handler';
 import LogOut from './LogOut';
@@ -20,15 +20,19 @@ class Main extends Component {
       post2: '',
       post_id: '',
       id: '',
+      user_id: '',
       email:'',
+      photo:null
     }
   }
   
   componentDidMount() {
     this.unsubscribe = this.props.navigation.addListener('focus', () => {
       this.checkLoggedIn();
+      this.getData();
+      this.get_profile_image();
     });
-    this.getData();
+    
   }
 
   componentWillUnmount() {
@@ -48,7 +52,7 @@ class Main extends Component {
             if(response.status === 200){
                 return response.json()
             }else if(response.status === 401){
-              this.props.navigation.navigate("LogIn");
+              this.props.navigation.navigate("Log In");
             }else{
                 throw 'Something went wrong';
             }
@@ -67,7 +71,7 @@ class Main extends Component {
   checkLoggedIn = async () => {
     const value = await AsyncStorage.getItem('@session_token');
     if (value == null) {
-        this.props.navigation.navigate('LogIn');
+        this.props.navigation.navigate('Log In');
     }
   };
 
@@ -159,44 +163,117 @@ class Main extends Component {
       })
   }
 
-  // takePicture = async() => {
-  //   if(this.camera){
-  //     const options = {quality: 0.5, 
-  //       base64: true,
-  //     onPictureSaved : (data) => this.sendToServer(data) 
-  //   };
-  //    await this.camera.takePictureAsync(options);
-  //    console.log(data.uri);
-  //   }
-  // }
+  get_profile_image = async() => {
+    const id = await AsyncStorage.getItem('@session_id');
+    const token = await AsyncStorage.getItem('@session_token');
+    fetch("http://localhost:3333/api/1.0.0/user/"+id+"/photo", {
+      method: 'GET',
+      headers: {
+        'X-Authorization': token
+      }
+    })
+      .then((res) => {
+        return res.blob();
+      })
+      .then((resBlob) => {
+        let data = URL.createObjectURL(resBlob);
+        this.setState({
+          photo: data,
+          isLoading: false
+        
+        });
+      })
+      .catch((err) => {
+        console.log("error", err);
+      });
+  };
 
-  // sendToServer = async (data) => { 
+
+  // viewPost = async (user_id) => {
   //   const id = await AsyncStorage.getItem('@session_id');
   //   const token = await AsyncStorage.getItem('@session_token');
-
-  //   let res = await fetch(data.base64);
-  //   let blob = await res.blob();
-
-  //   return fetch ("http://localhost:3333/api/1.0.0/user/" + id + "/photo", {
-  //     method: "POST",
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'X-Authorization': token
-  //     },
-  //     body: blob
-  //   })
+  //   return fetch("http://localhost:3333/api/1.0.0/user/"+ user_id + "/post", {    
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'X-Authorization': token
+  //       },
+  //       method: 'GET',// Uses the POST method as the user wants to log in
+  //       body: JSON.stringify({"text": this.state.post2})
+  //     })
+  //     // Sends an alert message if the user has entered the correct details matching to a user 
+  //     // ID and then user is logged in
   //   .then((response) => {
-  //     console.log("Picture added", response);
-  //   })
-  //   .catch((error) => {
-  //     console.log(error);
-  //   })
+  //       if(response.status === 200){
+  //           //return response.json()
+  //           console.log("Post has been successfully updated");
+  //           this.getData();
+  //       }else if(response.status === 400){
+  //           console.log("Error: Could not update post");
+  //       }else{
+  //           throw 'Something went wrong';
+  //       }
+  //   }) 
+  //     .catch((error) => {
+  //       console.log(error);
+  //     })
   // }
-
   
 
-  render() {
+  // likePost = async (post_id, user_id) => {
+  //   const id = await AsyncStorage.getItem('@session_id');
+  //   const token = await AsyncStorage.getItem('@session_token');
+  //   return fetch("http://localhost:3333/api/1.0.0/user/"+ user_id + "/post/" + post_id + "/like" , {    
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'X-Authorization': token
+  //       },
+  //       method: 'POST',// Uses the POST method as the user wants to log in
+  //     })
+  //     // Sends an alert message if the user has entered the correct details matching to a user 
+  //     // ID and then user is logged in
+  //   .then((response) => {
+  //       if(response.status === 200){
+  //           //return response.json()
+  //           console.log("You have liked the post");
+  //           this.getData();
+  //       }else if(response.status === 401){
+  //           console.log("Error: Could not like the post");
+  //       }else{
+  //           throw 'Something went wrong';
+  //       }
+  //   }) 
+  //     .catch((error) => {
+  //       console.log(error);
+  //     })
+  // }
 
+  // removePostLike = async (post_id, user_id) => {
+  //   const id = await AsyncStorage.getItem('@session_id');
+  //   const token = await AsyncStorage.getItem('@session_token');
+  //   return fetch("http://localhost:3333/api/1.0.0/user/"+ user_id + "/post/" + post_id + "/like" , {    
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'X-Authorization': token
+  //       },
+  //       method: 'DELETE',
+  //     })
+  //   .then((response) => {
+  //       if(response.status === 200){
+  //           //return response.json()
+  //           console.log("You have removed a like from the post");
+  //           this.getData();
+  //       }else if(response.status === 401){
+  //           console.log("Error: Could not remove the like from the post");
+  //       }else{
+  //           throw 'Something went wrong';
+  //       }
+  //   }) 
+  //     .catch((error) => {
+  //       console.log(error);
+  //     })
+  // }
+
+  render() {
     if (this.state.isLoading){
       return (
         <View
@@ -209,10 +286,8 @@ class Main extends Component {
             width: 100,
           }}>
           </View>
-        
       );
     }else{
-      // if (this.state.isLoading){
       return (
         <View style={styles.body}>
           <Text style={styles.name}> WELCOME </Text> 
@@ -221,7 +296,22 @@ class Main extends Component {
       <Text style={styles.logOutButton} onPress={() => this.props.navigation.navigate('Log Out')}> LOG OUT </Text>
       </TouchableOpacity>
 
+
       <Text style={styles.message}> What's your mind? You can share a post now with your friends! </Text> 
+
+      <Image
+                  source={{
+                  uri: this.state.photo,
+                  }}
+                  style={{
+               
+                  width: 100,
+                  height: 100,
+                  marginLeft:5,
+                  borderWidth: 3 
+                  }}
+                />
+
 
       <TextInput placeholder='Enter Your Post:' style={{fontSize: 24, backgroundColor: '#b8c427', width: 350, height: 60, marginLeft: 40, 
       marginTop: 45, borderWidth: 4, borderColor: '#FFFFFF'}}
@@ -230,29 +320,6 @@ class Main extends Component {
       <TouchableOpacity> 
       <Text onPress={() => this.newPost()} style={styles.post} > POST NOW </Text>
       </TouchableOpacity>
-
-      {/* <Camera
-        style = {styles.camera}
-        type = {this.state.type}
-        ref = {ref => this.camera = ref}
-        >
-          <View style = {styles.buttonContainer}>
-            <TouchableOpacity 
-            style = {styles.button}
-            onPress={() => {
-              this.takePicture(); 
-            }}>
-            <Text style = {styles.text}> </Text>
-            </TouchableOpacity>
-          </View>
-        </Camera>
-
-        <Image 
-        source = {{
-          uri: path_to_image,
-          headers: {"X-Authorization" : token}
-        }} /> */}
-
 
         <FlatList
           data = {this.state.postData}
@@ -272,6 +339,14 @@ class Main extends Component {
 
         <TouchableOpacity> 
         <Text onPress={() => this.removePost(item.post_id)} style={styles.deletePostButton} > DELETE POST </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity> 
+        <Text onPress={() => this.likePost(item.post_id)} style={styles.likePostButton} > Like Post </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity> 
+        <Text onPress={() => this.removePostLike(item.post_id)} style={styles.removePostLikeButton} > Remove Like </Text>
         </TouchableOpacity>
             </View>
         )}
@@ -357,15 +432,42 @@ deletePostButton: {
   fontSize: 20,
   color: '#FFFFFF',
   backgroundColor: 'red',
-  width: 120,
+  width: 150,
   height: 60, 
   fontWeight: 'bold',
   borderWidth:  4,  
   borderColor:  '#e3e327',
-  marginLeft: 270,
+  marginLeft: 240,
+  marginTop: -40,
+  textAlign: 'center',
+},
+likePostButton: {
+  fontSize: 20,
+  color: '#10c90a',
+  backgroundColor: 'yellow',
+  width: 120,
+  height: 40, 
+  fontWeight: 'bold',
+  borderWidth:  4,  
+  borderColor:  '#e3e327',
+  marginLeft: 40,
+  marginTop: -10,
+  textAlign: 'center',
+},
+removePostLikeButton: {
+  fontSize: 20,
+  color: 'yellow',
+  backgroundColor: 'red',
+  width: 160,
+  height: 40, 
+  fontWeight: 'bold',
+  borderWidth:  4,  
+  borderColor:  '#e3e327',
+  marginLeft: 240,
   marginTop: -50,
   textAlign: 'center',
-}
+},
+
 
 });
 

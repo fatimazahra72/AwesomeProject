@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, ScrollView, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LogIn from './LogIn';
 import Main from './Main';

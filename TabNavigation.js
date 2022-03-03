@@ -9,6 +9,8 @@ import friends from './assets/friendsRequest.png';
 import addFriends from './assets/addFriends.png';
 import edit from './assets/edit.png';
 import ProfileEdit from './ProfileEdit';
+import FriendsWall from './FriendsWall';
+import friendsWall from './assets/friendsWall.png';
 
 const Tab = createBottomTabNavigator();
 function TabNavigator() {
@@ -30,12 +32,16 @@ function TabNavigator() {
          options={{
             tabBarIcon: () => (<Image source={edit} style={{width: 35, height: 35, fontSize: 12}}
         />) }} />
+         <Tab.Screen name="Friends Wall" component={FriendsWall} 
+         options={{
+            tabBarIcon: () => (<Image source={friendsWall} style={{width: 35, height: 35, fontSize: 12}}
+        />) }} />
     </Tab.Navigator>
     );
     }
 const styles = StyleSheet.create({
 tab : {
-    fontSize: 40, 
+    fontSize: 30, 
     backgroundColor: 'white', 
     width: 350, 
     height: 40, 
