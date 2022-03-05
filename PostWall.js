@@ -1,13 +1,7 @@
 import React, {Component} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { FlatList } from 'react-native-gesture-handler';
-import LogOut from './LogOut';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Friends from './Friends';
-import TabNavigation from './TabNavigation';
-import { Camera } from 'expo-camera';
+import { FlatList, ScrollView } from 'react-native-gesture-handler';
 
 class PostWall extends Component {
   constructor(props){
@@ -15,7 +9,6 @@ class PostWall extends Component {
     this.state = {
       isLoading: true,
       postData : [],
-      //friendsData: [],
       text : '',
       post: '',
       post2: '',
@@ -23,147 +16,23 @@ class PostWall extends Component {
       id: '',
       user_id: '',
       email:'',
-      //search_friends: '',
     }
   }
   
-//   componentDidMount() {
-//     this.unsubscribe = this.props.navigation.addListener('focus', () => {
-//       this.checkLoggedIn();
-//     });
-//     this.getData();
-//   }
+  componentDidMount() {
+    this.unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.checkLoggedIn();
+    });
+    this.getData();
+  }
 
-//   componentWillUnmount() {
-//     this.unsubscribe();
-//   }
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
 
-//   getData = async () => {
-//     const token = await AsyncStorage.getItem('@session_token');
-//     const id = await AsyncStorage.getItem('@session_id');
-//     return fetch("http://localhost:3333/api/1.0.0/search?search_in=friends", {
-//           headers: {
-//             'X-Authorization':  token,
-//           },
-//           method: 'GET'
-//         })
-//         .then((response) => {
-//             if(response.status === 200){
-//                 return response.json()
-//             }else if(response.status === 400){
-//               this.props.navigation.navigate("Log In");
-//             }else{
-//                 throw 'Something went wrong';
-//             }
-//         })
-//         .then((responseJson) => {
-//           this.setState({
-//             isLoading: false,
-//             postData: responseJson
-//           })
-//         })
-//         .catch((error) => {
-//           console.log(error);
-//         })
-//   }
-
-//   checkLoggedIn = async () => {
-//     const value = await AsyncStorage.getItem('@session_token');
-//     if (value == null) {
-//         this.props.navigation.navigate('Log In');
-//     }
-//   };
-
-//   newPost = async () => {
-//     const id = await AsyncStorage.getItem('@session_id');
-//     const token = await AsyncStorage.getItem('@session_token');
-//     return fetch("http://localhost:3333/api/1.0.0/user/"+ id+ "/post", {    
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'X-Authorization': token
-//         },
-//         method: 'POST',// Uses the POST method as the user wants to log in
-//         body: JSON.stringify({"text": this.state.post})
-//       })
-//       // Sends an alert message if the user has entered the correct details matching to a user 
-//       // ID and then user is logged in
-//     .then((response) => {
-//         if(response.status === 201){
-//             //return response.json()
-//             console.log("Post has been uploaded successful");
-//             this.getData();
-//         }else if(response.status === 400){
-//             console.log("Error: Could not upload post")
-//         }else{
-//             throw 'Something went wrong';
-//         }
-//     })
-//       .catch((error) => {
-//         console.log(error);
-//         this.getData();
-//       })
-//   }
-
-//   removePost = async (post_id) => {
-//     const id = await AsyncStorage.getItem('@session_id');
-//     const token = await AsyncStorage.getItem('@session_token');
-//     return fetch("http://localhost:3333/api/1.0.0/user/"+ id+ "/post/" + post_id, {    
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'X-Authorization': token
-//         },
-//         method: 'DELETE',// Uses the POST method as the user wants to log in
-//         // body: JSON.stringify({"text": this.state.post})
-//       })
-//       // Sends an alert message if the user has entered the correct details matching to a user 
-//       // ID and then user is logged in
-//     .then((response) => {
-//         if(response.status === 200){
-//             //return response.json()
-//             console.log("Post has been successfully deleted");
-//             this.getData();
-//         }else if(response.status === 400){
-//             console.log("Error: Could not delete post")
-//         }else{
-//             throw 'Something went wrong';
-//         }
-//     }) 
-//       .catch((error) => {
-//         console.log(error);
-//       })
-//   }
-
-//   updatePost = async (post_id) => {
-//     const id = await AsyncStorage.getItem('@session_id');
-//     const token = await AsyncStorage.getItem('@session_token');
-//     return fetch("http://localhost:3333/api/1.0.0/user/"+ id + "/post/" + post_id, {    
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'X-Authorization': token
-//         },
-//         method: 'PATCH',// Uses the POST method as the user wants to log in
-//         body: JSON.stringify({"text": this.state.post2})
-//       })
-//       // Sends an alert message if the user has entered the correct details matching to a user 
-//       // ID and then user is logged in
-//     .then((response) => {
-//         if(response.status === 200){
-//             //return response.json()
-//             console.log("Post has been successfully updated");
-//             this.getData();
-//         }else if(response.status === 400){
-//             console.log("Error: Could not update post");
-//         }else{
-//             throw 'Something went wrong';
-//         }
-//     }) 
-//       .catch((error) => {
-//         console.log(error);
-//       })
-//   }
-
-  viewPost = async (user_id) => {
-    const id = await AsyncStorage.getItem('@session_id');
+  getData = async () => {
+    let {user_id} = this.props.route.params;
+    //const id = await AsyncStorage.getItem('@session_id');
     const token = await AsyncStorage.getItem('@session_token');
     return fetch("http://localhost:3333/api/1.0.0/user/"+ user_id + "/post", {    
         headers: {
@@ -172,27 +41,41 @@ class PostWall extends Component {
         },
         method: 'GET',// Uses the POST method as the user wants to log in
       })
-      // Sends an alert message if the user has entered the correct details matching to a user 
-      // ID and then user is logged in
     .then((response) => {
         if(response.status === 200){
-            //return response.json()
-            console.log("Post has been successfully updated");
+            return response.json()
+            //console.log("Post has been shown successfully");
             //this.getData();
-        }else if(response.status === 401){
+        }else if(response.status === 400){
             console.log("Error: Could not update post");
         }else{
             throw 'Something went wrong';
         }
-    }) 
-      .catch((error) => {
+    })
+    .then((responseJson) => {
+        this.setState({
+          isLoading: false,
+          postData: responseJson
+        })
+      })
+    .catch((error) => {
         console.log(error);
       })
   }
-  
 
-  likePost = async (post_id, user_id) => {
-    const id = await AsyncStorage.getItem('@session_id');
+  checkLoggedIn = async () => {
+    const value = await AsyncStorage.getItem('@session_token');
+    if (value == null) {
+        this.props.navigation.navigate('Log In');
+    }
+  };
+
+
+  likePost = async (post_id) => {
+    let {user_id} = this.props.route.params;
+    //let {post_id} = this.props.route.params;
+
+    //const id = await AsyncStorage.getItem('@session_id');
     const token = await AsyncStorage.getItem('@session_token');
     return fetch("http://localhost:3333/api/1.0.0/user/"+ user_id + "/post/" + post_id + "/like" , {    
         headers: {
@@ -219,10 +102,12 @@ class PostWall extends Component {
       })
   }
 
-  removePostLike = async (post_id, user_id) => {
-    const id = await AsyncStorage.getItem('@session_id');
+  removePostLike = async (post_id) => {
+    let {user_id} = this.props.route.params;
+   // let {post_id} = this.props.route.params;
+    //const id = await AsyncStorage.getItem('@session_id');
     const token = await AsyncStorage.getItem('@session_token');
-    return fetch("http://localhost:3333/api/1.0.0/user/"+ user_id + "/post/" + post_id + "/like" , {    
+    return fetch("http://localhost:3333/api/1.0.0/user/"+ user_id + "/post/" + post_id + "/like", {    
         headers: {
           'Content-Type': 'application/json',
           'X-Authorization': token
@@ -245,78 +130,144 @@ class PostWall extends Component {
       })
   }
 
+  addPostOnFriendsWall = async () => {
+    let {user_id} = this.props.route.params;
 
-  render() {
-    if (this.state.isLoading){
+    //const id = await AsyncStorage.getItem('@session_id');
+
+    const token = await AsyncStorage.getItem('@session_token');
+    return fetch("http://localhost:3333/api/1.0.0/user/"+ user_id + "/post", {    
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Authorization': token
+        },
+        method: 'POST',// Uses the POST method as the user wants to log in
+        body: JSON.stringify({"text": this.state.post})
+      })
+      // Sends an alert message if the user has entered the correct details matching to a user 
+      // ID and then user is logged in
+    .then((response) => {
+        if(response.status === 201){
+            console.log("Post has been uploaded successful");
+            this.getData();
+        }else if(response.status === 400){
+            console.log("Error: Could not upload post")
+        }else{
+            throw 'Something went wrong';
+        }
+    })
+      .catch((error) => {
+        console.log(error);
+        this.getData();
+      })
+  }
+
+  updatePostOnFriendsWall = async (post_id) => {
+    let {user_id} = this.props.route.params;
+    const id = await AsyncStorage.getItem('@session_id');
+    const token = await AsyncStorage.getItem('@session_token');
+    return fetch("http://localhost:3333/api/1.0.0/user/"+ user_id + "/post/" + post_id, {    
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Authorization': token
+        },
+        method: 'PATCH',// Uses the POST method as the user wants to log in
+        body: JSON.stringify({"text": this.state.post2})
+      })
+    .then((response) => {
+        if(response.status === 200){
+            console.log("Post has been successfully updated");
+            this.getData();
+        }else if(response.status === 400){
+            console.log("Error: Could not update post");
+        }else{
+            throw 'Something went wrong';
+        }
+    }) 
+      .catch((error) => {
+        console.log(error);
+      })
+  }
+
+  removePostOnFriendsWall = async (post_id) => {
+    let {user_id} = this.props.route.params;
+    //const id = await AsyncStorage.getItem('@session_id');
+    const token = await AsyncStorage.getItem('@session_token');
+    return fetch("http://localhost:3333/api/1.0.0/user/"+ user_id+ "/post/" + post_id, {    
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Authorization': token
+        },
+        method: 'DELETE',
+      })
+    .then((response) => {
+        if(response.status === 200){
+            console.log("Post has been successfully deleted");
+            this.getData();
+        }else if(response.status === 400){
+            console.log("Error: Could not delete post")
+        }else{
+            throw 'Something went wrong';
+        }
+    }) 
+      .catch((error) => {
+        console.log(error);
+      })
+  }
+
+render() {
       return (
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: 200,
-            width: 100,
-          }}>
-          </View>
-      );
-    }else{
-      return (
+        <ScrollView>
         <View style={styles.body}>
-          <Text style={styles.name}> VIEW FRIENDS ACCOUNTS </Text> 
+        <Text style={styles.title}> View Friends Post </Text> 
 
-        {/* <TextInput placeholder='Enter Username to find friends you have added:' style={{fontSize: 22, backgroundColor: '#b8c427', width: 350, height: 40, marginLeft: 40, 
-        marginTop: 60, borderWidth: 4, borderColor: '#FFFFFF'}}
-        value={this.state.search_friends} onChangeText={value => this.setState({search_friends: value})}/>
+        <Text style={styles.message}> Share Posts with your Friends </Text> 
 
-      <TouchableOpacity> 
-      <Text onPress={() => this.getData()} style={styles.search} > Search </Text>
-      </TouchableOpacity>  */}
-
-      {/* <FlatList 
+      <FlatList
         data = {this.state.postData}
         renderItem={({item}) => (
       <View>
-      <Text style={{height:20, width: 200, backgroundColor: '#858713', color: 'black', marginTop: 20, marginLeft: 110}}> 
-        User Name: {item.user_givenname} {item.user_familyname}
+      <Text style={{height:90, width: 260, backgroundColor: '#858713', color: 'black', marginTop: 70, marginLeft: 75, fontSize: 23}}> 
+       Post: {item.text}
       </Text>
+      
+      <TouchableOpacity> 
+      <Text onPress={() => this.likePost(item.post_id)}  style={styles.likePostButton} > Like Post </Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity> 
+      <Text onPress={() => this.removePostLike(item.post_id)} style={styles.removeLikeButton} > Remove Like </Text>
+      </TouchableOpacity>
+
+      <TextInput placeholder='Enter Your Post:' style={{fontSize: 24, backgroundColor: '#b8c427', width: 350, height: 60, marginLeft: 40, 
+      marginTop: 45, borderWidth: 4, borderColor: '#FFFFFF'}}
+      value={this.state.post} onChangeText={value => this.setState({post: value})}/>
 
       <TouchableOpacity> 
-        <Text onPress={() => this.viewPost(item.post_id)} style={styles.editPostButton} > View Post </Text>
-        </TouchableOpacity>
+      <Text onPress={() => this.addPostOnFriendsWall()} style={styles.addPost}> Post on Your Friend's Wall </Text>
+      </TouchableOpacity>
+      
+      <TextInput placeholder='Enter Your Updated Post:' style={{fontSize: 24, backgroundColor: '#b8c427', width: 350, height: 60, marginLeft: 40, 
+      marginTop: 45, borderWidth: 4, borderColor: '#FFFFFF'}}
+      value={this.state.post2} onChangeText={value => this.setState({post2: value})}/>
 
-        <Text style={{height:20, width: 200, backgroundColor: '#858713', color: 'black', marginTop: 20, marginLeft: 110}}> 
-        Post: {item.post_id}
-      </Text>
-{/* 
-        <TextInput placeholder='Edit Post:' style={{fontSize: 30, backgroundColor: '#e4ed79', width: 350, height: 40, marginLeft: 40, 
-        marginTop: 30, borderWidth: 4, borderColor: '#FFFFFF'}}
-        value={this.state.post2} onChangeText={value => this.setState({post2: value})}/>
+      <TouchableOpacity> 
+      <Text onPress={() => this.updatePostOnFriendsWall(item.post_id)} style={styles.updatePost}> Update Post on Friend's Page </Text>
+      </TouchableOpacity>
 
-        <TouchableOpacity> 
-        <Text onPress={() => this.updatePost(item.post_id)} style={styles.editPostButton} > EDIT POST </Text>
-        </TouchableOpacity>
+      <TouchableOpacity> 
+      <Text onPress={() => this.removePostOnFriendsWall(item.post_id)} style={styles.removePost}> Remove Post on Friend's Page </Text>
+      </TouchableOpacity>
 
-        <TouchableOpacity> 
-        <Text onPress={() => this.removePost(item.post_id)} style={styles.deletePostButton} > DELETE POST </Text>
-        </TouchableOpacity> */}
 
-        {/* <TouchableOpacity> 
-        <Text onPress={() => this.likePost(item.post_id)} style={styles.likePostButton} > Like Post </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity> 
-        <Text onPress={() => this.removePostLike(item.post_id)} style={styles.removePostLikeButton} > Remove Like </Text>
-        </TouchableOpacity> */}
-           
-        {/* // )}
-        //   keyExtractor={(item,index) => item.post_id.toString()}/>  */} 
-
- </View>
+      </View>
+        )} 
+        keyExtractor={(item,index) => item.post_id.toString()}/> 
+        </View>
+        </ScrollView>
       );
-     }
     }
-  }
+}
 
 
 const styles = StyleSheet.create({
@@ -325,80 +276,34 @@ const styles = StyleSheet.create({
   flex:  1,
   display: 'flex',
 },
-name : {
-  color: '#033329',
-  fontSize: 26, 
-  marginTop: 100,
-  fontWeight: 'bold',
-  textAlign: 'center',
-},
 message: {
   color: '#FFFFFF',
-  fontSize: 28, 
+  fontSize: 34, 
   marginTop: 25,
   fontWeight: 'bold',
   textAlign: 'center',
   fontSize: 19, 
   backgroundColor: '#0e8269',
   width: 350, 
-  height: 70,
+  height: 40,
   borderWidth: 4,  
   borderColor: '#e3e327',
   marginLeft: 40,
   fontStyle: 'italic',
 },
-post: {
-  fontSize: 26,
-  color: '#FFFFFF',
-  backgroundColor: '#81CD2A',
-  width: 160,
-  height: 50, 
-  fontWeight: 'bold',
-  borderWidth:  4,  
-  borderColor:  '#e3e327',
-  marginLeft: 135,
-  marginTop: 30,
-  textAlign: 'center'
-  },
-logOutButton: {
-  fontSize: 16,
-  color: '#FFFFFF',
-  backgroundColor: '#08fc00',
-  width: 90,
-  height: 30, 
-  fontWeight: 'bold',
-  borderWidth:  3,  
-  borderColor:  '#e3e327',
-  marginLeft: 320,
-  marginTop: -100,
-  textAlign: 'center',
-  justifyContent: 'center',
-},
-editPostButton : {
-  fontSize: 20,
-  color: '#FFFFFF',
-  backgroundColor: '#25e849',
-  width: 120,
-  height: 40, 
-  fontWeight: 'bold',
-  borderWidth:  4,  
-  borderColor:  '#e3e327',
+title: {
+  color: '#a8a819',
+  fontSize: 22, 
+  marginTop: 50,
   marginLeft: 40,
-  marginTop: 30,
-  textAlign: 'center'
-},
-deletePostButton: {
-  fontSize: 20,
-  color: '#FFFFFF',
-  backgroundColor: 'red',
-  width: 150,
-  height: 60, 
   fontWeight: 'bold',
-  borderWidth:  4,  
-  borderColor:  '#e3e327',
-  marginLeft: 240,
-  marginTop: -40,
   textAlign: 'center',
+  borderWidth:  3,  
+  borderColor: '#e3e327',
+  backgroundColor:  '#0e8269',
+  width: 350,
+  height: 40,
+  borderRadius: 10,
 },
 likePostButton: {
   fontSize: 20,
@@ -410,10 +315,10 @@ likePostButton: {
   borderWidth:  4,  
   borderColor:  '#e3e327',
   marginLeft: 40,
-  marginTop: -10,
+  marginTop: 20,
   textAlign: 'center',
 },
-removePostLikeButton: {
+removeLikeButton: {
   fontSize: 20,
   color: 'yellow',
   backgroundColor: 'red',
@@ -426,7 +331,45 @@ removePostLikeButton: {
   marginTop: -50,
   textAlign: 'center',
 },
-
+addPost: {
+  fontSize: 20,
+  color: '#FFFFFF',
+  backgroundColor: '#81CD2A',
+  width: 270,
+  height: 45, 
+  fontWeight: 'bold',
+  borderWidth:  4,  
+  borderColor:  '#e3e327',
+  marginLeft: 85,
+  marginTop: 30,
+  textAlign: 'center'
+},
+updatePost: {
+  fontSize: 20,
+  color: '#FFFFFF',
+  backgroundColor: '#0c6957',
+  width: 270,
+  height: 70, 
+  fontWeight: 'bold',
+  borderWidth:  4,  
+  borderColor:  '#e3e327',
+  marginLeft: 85,
+  marginTop: 30,
+  textAlign: 'center'
+},
+removePost: {
+  fontSize: 20,
+  color: '#FFFFFF',
+  backgroundColor: 'red',
+  width: 270,
+  height: 70, 
+  fontWeight: 'bold',
+  borderWidth:  4,  
+  borderColor:  '#e3e327',
+  marginLeft: 85,
+  marginTop: 30,
+  textAlign: 'center'
+},
 });
 
 export default PostWall;

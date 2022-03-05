@@ -1,10 +1,10 @@
 
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import { Camera } from 'expo-camera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Camera } from 'expo-camera';
 
-class CameraPage extends Component {
+class CameraImage extends Component {
   constructor(props) {
     super(props);
 
@@ -20,9 +20,9 @@ class CameraPage extends Component {
   }
 
   takePicture = async () => {
-    console.log('here 1');
+    console.log('Picture no.1');
     if (this.camera) {
-      console.log('here 2');
+      console.log('Picture no.2');
       const options = {
         quality: 0.5,
         base64: true,
@@ -49,7 +49,7 @@ class CameraPage extends Component {
       body: blob,
     })
       .then((response) => {
-        console.log('Picture added', response);
+        console.log('Picture uploaded', response);
       })
       .catch((error) => {
         console.log(error);
@@ -63,17 +63,14 @@ class CameraPage extends Component {
         <Camera
           style={styles.camera}
           type={this.state.type}
-          ref={(ref) => this.camera = ref}
-        >
+          ref={(ref) => this.camera = ref}>
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={styles.button}
               onPress={() => {
                 this.takePicture();
-              }}
-            >
-
-              <Text style={styles.text}> Take Picture</Text>
+              }}>
+              <Text style={styles.text}> Take Profile Pic </Text>
             </TouchableOpacity>
           </View>
         </Camera>
@@ -110,4 +107,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CameraPage;
+export default CameraImage;

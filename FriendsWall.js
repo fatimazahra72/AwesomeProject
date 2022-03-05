@@ -17,8 +17,7 @@ class FriendsWall extends Component {
       post_id: '',
       id: '',
       user_id: '',
-      email:'',
-      search_friends: '',
+      search_string: '',
     }
   }
   
@@ -36,11 +35,11 @@ class FriendsWall extends Component {
   getData = async () => {
     const token = await AsyncStorage.getItem('@session_token');
     const id = await AsyncStorage.getItem('@session_id');
-    return fetch("http://localhost:3333/api/1.0.0/search?search_in=friends" + this.state.search_friends, {
+    return fetch("http://localhost:3333/api/1.0.0/search?search_in=friends&q=" + this.state.search_string, {
           headers: {
             'X-Authorization':  token,
           },
-          method: 'GET'
+          method: 'GET',
         })
         .then((response) => {
             if(response.status === 200){
@@ -69,93 +68,33 @@ class FriendsWall extends Component {
     }
   };
 
-//   newPost = async () => {
-//     const id = await AsyncStorage.getItem('@session_id');
-//     const token = await AsyncStorage.getItem('@session_token');
-//     return fetch("http://localhost:3333/api/1.0.0/user/"+ id+ "/post", {    
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'X-Authorization': token
-//         },
-//         method: 'POST',// Uses the POST method as the user wants to log in
-//         body: JSON.stringify({"text": this.state.post})
-//       })
-//       // Sends an alert message if the user has entered the correct details matching to a user 
-//       // ID and then user is logged in
-//     .then((response) => {
-//         if(response.status === 201){
-//             //return response.json()
-//             console.log("Post has been uploaded successful");
-//             this.getData();
-//         }else if(response.status === 400){
-//             console.log("Error: Could not upload post")
-//         }else{
-//             throw 'Something went wrong';
-//         }
-//     })
-//       .catch((error) => {
-//         console.log(error);
-//         this.getData();
-//       })
-//   }
+  // get_friends_count = async () => {
+  // const {user_id} = this.props.route.params;
+  //  // const id = await AsyncStorage.getItem('@session_id');
+  //   const token = await AsyncStorage.getItem('@session_token');
+  //   return fetch("http://localhost:3333/api/1.0.0/user/"+ user_id + "/friends", {    
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'X-Authorization': token
+  //       },
+  //       method: 'GET',// Uses the POST method as the user wants to log in
+  //     })
+  //   .then((response) => {
+  //       if(response.status === 200){
+  //           console.log("Friend Count is Shown has been uploaded successful");
+  //           this.getData();
+  //       }else if(response.status === 401){
+  //           console.log("Error: Could not upload post")
+  //       }else{
+  //           throw 'Something went wrong';
+  //       }
+  //   })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       //this.getData();
+  //     })
+  // }
 
-//   removePost = async (post_id) => {
-//     const id = await AsyncStorage.getItem('@session_id');
-//     const token = await AsyncStorage.getItem('@session_token');
-//     return fetch("http://localhost:3333/api/1.0.0/user/"+ id+ "/post/" + post_id, {    
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'X-Authorization': token
-//         },
-//         method: 'DELETE',// Uses the POST method as the user wants to log in
-//         // body: JSON.stringify({"text": this.state.post})
-//       })
-//       // Sends an alert message if the user has entered the correct details matching to a user 
-//       // ID and then user is logged in
-//     .then((response) => {
-//         if(response.status === 200){
-//             //return response.json()
-//             console.log("Post has been successfully deleted");
-//             this.getData();
-//         }else if(response.status === 400){
-//             console.log("Error: Could not delete post")
-//         }else{
-//             throw 'Something went wrong';
-//         }
-//     }) 
-//       .catch((error) => {
-//         console.log(error);
-//       })
-//   }
-
-//   updatePost = async (post_id) => {
-//     const id = await AsyncStorage.getItem('@session_id');
-//     const token = await AsyncStorage.getItem('@session_token');
-//     return fetch("http://localhost:3333/api/1.0.0/user/"+ id + "/post/" + post_id, {    
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'X-Authorization': token
-//         },
-//         method: 'PATCH',// Uses the POST method as the user wants to log in
-//         body: JSON.stringify({"text": this.state.post2})
-//       })
-//       // Sends an alert message if the user has entered the correct details matching to a user 
-//       // ID and then user is logged in
-//     .then((response) => {
-//         if(response.status === 200){
-//             //return response.json()
-//             console.log("Post has been successfully updated");
-//             this.getData();
-//         }else if(response.status === 400){
-//             console.log("Error: Could not update post");
-//         }else{
-//             throw 'Something went wrong';
-//         }
-//     }) 
-//       .catch((error) => {
-//         console.log(error);
-//       })
-//   }
 
   render() {
     if (this.state.isLoading){
@@ -174,11 +113,11 @@ class FriendsWall extends Component {
     }else{
       return (
         <View style={styles.body}>
-          <Text style={styles.name}> VIEW FRIENDS ACCOUNTS </Text> 
+          <Text style={styles.title}> VIEW FOLLOWERS </Text> 
 
-        <TextInput placeholder='Enter Username to find friends you have added:' style={{fontSize: 22, backgroundColor: '#b8c427', width: 350, height: 40, marginLeft: 40, 
+        <TextInput placeholder='Search Your Friends:' style={{fontSize: 22, backgroundColor: '#b8c427', width: 350, height: 40, marginLeft: 40, 
         marginTop: 60, borderWidth: 4, borderColor: '#FFFFFF'}}
-        value={this.state.search_friends} onChangeText={value => this.setState({search_friends: value})}/>
+        value={this.state.search_string} onChangeText={value => this.setState({search_string: value})}/>
 
       <TouchableOpacity> 
       <Text onPress={() => this.getData()} style={styles.search} > Search </Text>
@@ -188,17 +127,25 @@ class FriendsWall extends Component {
         data = {this.state.friendsData}
         renderItem={({item}) => (
       <View>
-      <Text style={{height:20, width: 200, backgroundColor: '#858713', color: 'black', marginTop: 20, marginLeft: 110}}> 
-        User Name: {item.user_givenname} {item.user_familyname}
+      <Text style={{height:30, width: 260, backgroundColor: '#858713', color: 'black', marginTop: 50, marginLeft: 75, fontSize: 22}}> 
+        User Name: {item.user_givenname} {item.user_familyname} 
       </Text> 
 
       <TouchableOpacity>  
-      <Text style={{marginTop: 60}} onPress={() => this.props.navigation.navigate('Friends Wall')}> View Posts </Text>
+      <Text style={styles.viewPosts} onPress={() => this.props.navigation.navigate('FriendsWall', {user_id: item.user_id})} > View Posts </Text>
       </TouchableOpacity>
+
+      <TouchableOpacity>  
+      <Text style={styles.viewFriends} onPress={() => this.props.navigation.navigate('Followers', {user_id: item.user_id})} > View User Friends </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity>  
+      <Text style={styles.viewFriends} onPress={() => this.props.navigation.navigate('Friends Profile Pic', {user_id: item.user_id})} > View User Friends </Text>
+      </TouchableOpacity>
+          
           </View>
         )}
           keyExtractor={(item,index) => item.user_givenname}/> 
-
         </View>
 
       );
@@ -213,108 +160,61 @@ const styles = StyleSheet.create({
   flex:  1,
   display: 'flex',
 },
-name : {
-  color: '#033329',
-  fontSize: 26, 
-  marginTop: 100,
-  fontWeight: 'bold',
-  textAlign: 'center',
-},
-message: {
-  color: '#FFFFFF',
-  fontSize: 28, 
-  marginTop: 25,
-  fontWeight: 'bold',
-  textAlign: 'center',
-  fontSize: 19, 
-  backgroundColor: '#0e8269',
-  width: 350, 
-  height: 70,
-  borderWidth: 4,  
-  borderColor: '#e3e327',
+title: {
+  color: '#a8a819',
+  fontSize: 22, 
+  marginTop: 50,
   marginLeft: 40,
-  fontStyle: 'italic',
+  fontWeight: 'bold',
+  textAlign: 'center',
+  borderWidth:  3,  
+  borderColor: '#e3e327',
+  backgroundColor:  '#0e8269',
+  width: 350,
+  height: 50,
+  borderRadius: 10,
 },
-post: {
-  fontSize: 26,
-  color: '#FFFFFF',
+search : {
+  fontSize: 28,
+  color: '#f2f553',
   backgroundColor: '#81CD2A',
   width: 160,
   height: 50, 
   fontWeight: 'bold',
-  borderWidth:  4,  
+  borderWidth:  3,  
   borderColor:  '#e3e327',
   marginLeft: 135,
   marginTop: 30,
   textAlign: 'center'
-  },
-logOutButton: {
-  fontSize: 16,
+},
+viewPosts: {
+  fontSize: 22,
   color: '#FFFFFF',
-  backgroundColor: '#08fc00',
-  width: 90,
-  height: 30, 
+  backgroundColor: '#81CD2A',
+  width: 140,
+  height: 50, 
   fontWeight: 'bold',
   borderWidth:  3,  
   borderColor:  '#e3e327',
-  marginLeft: 320,
-  marginTop: -100,
+  marginLeft: 140,
+  marginTop: 40,
   textAlign: 'center',
-  justifyContent: 'center',
+  borderRadius: 20,
 },
-editPostButton : {
-  fontSize: 20,
+viewFriends: {
+  fontSize: 22,
   color: '#FFFFFF',
-  backgroundColor: '#25e849',
-  width: 120,
-  height: 40, 
+  backgroundColor: '#5f9e06',
+  width: 180,
+  height: 80, 
   fontWeight: 'bold',
-  borderWidth:  4,  
+  borderWidth:  3,  
   borderColor:  '#e3e327',
-  marginLeft: 40,
-  marginTop: 30,
-  textAlign: 'center'
-},
-deletePostButton: {
-  fontSize: 20,
-  color: '#FFFFFF',
-  backgroundColor: 'red',
-  width: 150,
-  height: 60, 
-  fontWeight: 'bold',
-  borderWidth:  4,  
-  borderColor:  '#e3e327',
-  marginLeft: 240,
-  marginTop: -40,
+  marginLeft: 120,
+  marginTop: 40,
   textAlign: 'center',
+  borderRadius: 20,
 },
-likePostButton: {
-  fontSize: 20,
-  color: '#10c90a',
-  backgroundColor: 'yellow',
-  width: 120,
-  height: 40, 
-  fontWeight: 'bold',
-  borderWidth:  4,  
-  borderColor:  '#e3e327',
-  marginLeft: 40,
-  marginTop: -10,
-  textAlign: 'center',
-},
-removePostLikeButton: {
-  fontSize: 20,
-  color: 'yellow',
-  backgroundColor: 'red',
-  width: 160,
-  height: 40, 
-  fontWeight: 'bold',
-  borderWidth:  4,  
-  borderColor:  '#e3e327',
-  marginLeft: 240,
-  marginTop: -50,
-  textAlign: 'center',
-},
-
 });
 
 export default FriendsWall;

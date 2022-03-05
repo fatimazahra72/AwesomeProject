@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, TextInput, View, Button, StyleSheet, Title, TouchableOpacity } from 'react-native';
+import { Text, TextInput, View, Button, StyleSheet, Title, TouchableOpacity, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class ProfileEdit extends Component {
@@ -15,7 +15,6 @@ constructor(props){
         updated_first_name:'',
         updated_last_name:'',
         updated_email:'',
-        updated_password:''
     };
 }
 
@@ -114,40 +113,10 @@ constructor(props){
    })
 }
 
-    updatePassword = async() =>
-    {
-    const token = await AsyncStorage.getItem('@session_token');
-    const id = await AsyncStorage.getItem('@session_id');
-    let to_Send = {};       
-    if(this.state.password !=this.state.updated_password){
-        to_Send['password'] = this.state.password;
-        }
-
-    return fetch("http://localhost:3333/api/1.0.0/user/" + id,{ 
-        method: 'PATCH', 
-        headers: {
-            'Content-Type': 'application/json',
-            'X-Authorization':  token
-        }, 
-        body: JSON.stringify(to_Send) //stings the values in
-    })
-
-    .then((response)=>{
-        if(response.status === 200){
-            this.props.navigation.navigate("Log In");
-        }else if(response.status === 401){
-            throw "Invalid: Password has already been used"
-        }else{
-            throw "Something went wrong"
-        }  
-    }).catch((error)=>{
-        console.log(error);
-  })
-}
-
 render(){
     return (
     <View style={styles.body}>
+    <ScrollView>
     <Text style={styles.name}> SPACEBOOK </Text>
     <Text style={styles.title}> UPDATE YOUR ACCOUNT CREDENTIALS WHENEVER YOU WISH </Text> 
 
@@ -187,22 +156,12 @@ render(){
             <Text onPress={()=> this.updateEmail()} style={styles.emailButton}> Update Email Address </Text>
         </TouchableOpacity>
 
-        <TextInput
-        placeholder='Enter new Password' 
-        style={{fontSize: 22, backgroundColor: '#b8c427', width: 350, height: 40, marginLeft: 40, 
-        marginTop: 20, borderWidth: 4, borderColor: '#FFFFFF'}}
-        onChangeText={value => this.setState({password:value})}
-        value={this.state.password}
-        />
-
-       <TouchableOpacity>
-            <Text onPress={()=> this.updatePassword()} style={styles.passwordButton}> Update Email Address </Text>
-        </TouchableOpacity>
-
         <TouchableOpacity> 
-          <Text  onPress={() => this.props.navigation.navigate('Camera')}> Take A Picture to Upload a Profile Picture </Text>
+          <Text style={styles.camera} onPress={() => this.props.navigation.navigate('Camera')}> Click to Upload a New Profile Picture </Text>
         </TouchableOpacity>
+        </ScrollView>
         </View>
+        
         )
     }
 }
@@ -221,16 +180,16 @@ name: {
     fontWeight: 'bold',
 },
 title: {
-    color: '#033329',
+    color: '#a8a819',
     fontSize: 22, 
-    marginTop: 40,
-    marginLeft: 80,
+    marginTop: 35,
+    marginLeft: 40,
     fontWeight: 'bold',
     textAlign: 'center',
     borderWidth:  3,  
     borderColor: '#e3e327',
     backgroundColor:  '#0e8269',
-    width: 280,
+    width: 350,
     height: 100,
     borderRadius: 10,
 },
@@ -275,20 +234,20 @@ emailButton: {
     marginTop: 20,
     textAlign: 'center',
     borderRadius: 30,
-}, 
-passwordButton: {
+},  
+camera: {
     fontSize: 20,
-    color: '#FFFFFF',
-    backgroundColor: '#10c90a',
+    color: '#a8a819',
+    backgroundColor: '#045d5e',
     width: 250,
-    height: 40, 
+    height: 60, 
     fontWeight: 'bold',
     borderWidth:  3,  
     borderColor:  '#e3e327',
     marginLeft: 90,
     marginTop: 20,
     textAlign: 'center',
-    borderRadius: 30,
+    borderRadius: 10,
 }
 });
 export default ProfileEdit;

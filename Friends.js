@@ -77,8 +77,6 @@ addFriends = async (user_id) => {
       },
       method: 'POST',// Uses the POST method as the user wants to log in
     })
-    // Sends an alert message if the user has entered the correct details matching to a user 
-    // ID and then user is logged in
   .then((response) => { 
       if(response.status === 200){
           console.log("Friend request has been submitted");

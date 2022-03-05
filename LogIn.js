@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Text, TextInput, View, StyleSheet, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Main from './Main';
 import logo from './assets/logo.png';
 
 class LogIn extends Component {
@@ -147,9 +146,8 @@ logInButton : {
 },
 });
 
-// export default LogIn
 
-export default LogIn
+export default LogIn;
 
 
 

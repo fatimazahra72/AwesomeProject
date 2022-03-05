@@ -15,8 +15,8 @@ import friendsWall from './assets/friendsWall.png';
 const Tab = createBottomTabNavigator();
 function TabNavigator() {
     return (
-    <Tab.Navigator intitialRouteName="Main" style={styles.tab}>
-        <Tab.Screen name="Main" component={Main}
+    <Tab.Navigator>
+        <Tab.Screen name="Main1" component={Main}
         options={{
             tabBarIcon: () => (<Image source={home} style={{width: 35, height: 35, fontSize: 12}}
         />) }} />

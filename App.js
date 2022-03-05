@@ -9,7 +9,9 @@ import Home from './Home';
 import LogOut from './LogOut';
 import TabNavigator from './TabNavigation';
 import PostWall from './PostWall';
-import CameraPage from './Camera';
+import CameraImage from './Camera';
+import Followers from './Followers';
+import FriendsPic from './FriendsPic';
 
 
 const Stack = createNativeStackNavigator();
@@ -23,8 +25,10 @@ function navigator() {
         <Stack.Screen name="Main" component={TabNavigator} />
       <Stack.Screen name="Sign Up" component={SignUp} />
       <Stack.Screen name="Log Out" component={LogOut} />
-      <Stack.Screen name="Friends Wall" component={PostWall} />
-      <Stack.Screen name="Camera" component={CameraPage} />
+      <Stack.Screen name="FriendsWall" component={PostWall} />
+      <Stack.Screen name="Followers" component={Followers} />
+      <Stack.Screen name="Camera" component={CameraImage} />
+      <Stack.Screen name="Friends Profile Pic" component={FriendsPic} />
     </Stack.Navigator>
     </NavigationContainer>
 );

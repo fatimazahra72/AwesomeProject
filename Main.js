@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { FlatList } from 'react-native-gesture-handler';
+import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import LogOut from './LogOut';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -14,14 +14,7 @@ class Main extends Component {
     super(props);
     this.state = {
       isLoading: true,
-      postData : [],
       text : '',
-      post: '',
-      post2: '',
-      post_id: '',
-      id: '',
-      user_id: '',
-      email:'',
       photo:null
     }
   }
@@ -30,7 +23,7 @@ class Main extends Component {
     this.unsubscribe = this.props.navigation.addListener('focus', () => {
       this.checkLoggedIn();
       this.getData();
-      this.get_profile_image();
+      this.post_profile_image();
     });
     
   }
@@ -113,11 +106,8 @@ class Main extends Component {
           'Content-Type': 'application/json',
           'X-Authorization': token
         },
-        method: 'DELETE',// Uses the POST method as the user wants to log in
-        // body: JSON.stringify({"text": this.state.post})
+        method: 'DELETE',
       })
-      // Sends an alert message if the user has entered the correct details matching to a user 
-      // ID and then user is logged in
     .then((response) => {
         if(response.status === 200){
             //return response.json()
@@ -145,8 +135,6 @@ class Main extends Component {
         method: 'PATCH',// Uses the POST method as the user wants to log in
         body: JSON.stringify({"text": this.state.post2})
       })
-      // Sends an alert message if the user has entered the correct details matching to a user 
-      // ID and then user is logged in
     .then((response) => {
         if(response.status === 200){
             //return response.json()
@@ -163,7 +151,7 @@ class Main extends Component {
       })
   }
 
-  get_profile_image = async() => {
+  post_profile_image = async() => {
     const id = await AsyncStorage.getItem('@session_id');
     const token = await AsyncStorage.getItem('@session_token');
     fetch("http://localhost:3333/api/1.0.0/user/"+id+"/photo", {
@@ -188,91 +176,6 @@ class Main extends Component {
       });
   };
 
-
-  // viewPost = async (user_id) => {
-  //   const id = await AsyncStorage.getItem('@session_id');
-  //   const token = await AsyncStorage.getItem('@session_token');
-  //   return fetch("http://localhost:3333/api/1.0.0/user/"+ user_id + "/post", {    
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'X-Authorization': token
-  //       },
-  //       method: 'GET',// Uses the POST method as the user wants to log in
-  //       body: JSON.stringify({"text": this.state.post2})
-  //     })
-  //     // Sends an alert message if the user has entered the correct details matching to a user 
-  //     // ID and then user is logged in
-  //   .then((response) => {
-  //       if(response.status === 200){
-  //           //return response.json()
-  //           console.log("Post has been successfully updated");
-  //           this.getData();
-  //       }else if(response.status === 400){
-  //           console.log("Error: Could not update post");
-  //       }else{
-  //           throw 'Something went wrong';
-  //       }
-  //   }) 
-  //     .catch((error) => {
-  //       console.log(error);
-  //     })
-  // }
-  
-
-  // likePost = async (post_id, user_id) => {
-  //   const id = await AsyncStorage.getItem('@session_id');
-  //   const token = await AsyncStorage.getItem('@session_token');
-  //   return fetch("http://localhost:3333/api/1.0.0/user/"+ user_id + "/post/" + post_id + "/like" , {    
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'X-Authorization': token
-  //       },
-  //       method: 'POST',// Uses the POST method as the user wants to log in
-  //     })
-  //     // Sends an alert message if the user has entered the correct details matching to a user 
-  //     // ID and then user is logged in
-  //   .then((response) => {
-  //       if(response.status === 200){
-  //           //return response.json()
-  //           console.log("You have liked the post");
-  //           this.getData();
-  //       }else if(response.status === 401){
-  //           console.log("Error: Could not like the post");
-  //       }else{
-  //           throw 'Something went wrong';
-  //       }
-  //   }) 
-  //     .catch((error) => {
-  //       console.log(error);
-  //     })
-  // }
-
-  // removePostLike = async (post_id, user_id) => {
-  //   const id = await AsyncStorage.getItem('@session_id');
-  //   const token = await AsyncStorage.getItem('@session_token');
-  //   return fetch("http://localhost:3333/api/1.0.0/user/"+ user_id + "/post/" + post_id + "/like" , {    
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'X-Authorization': token
-  //       },
-  //       method: 'DELETE',
-  //     })
-  //   .then((response) => {
-  //       if(response.status === 200){
-  //           //return response.json()
-  //           console.log("You have removed a like from the post");
-  //           this.getData();
-  //       }else if(response.status === 401){
-  //           console.log("Error: Could not remove the like from the post");
-  //       }else{
-  //           throw 'Something went wrong';
-  //       }
-  //   }) 
-  //     .catch((error) => {
-  //       console.log(error);
-  //     })
-  // }
-
   render() {
     if (this.state.isLoading){
       return (
@@ -290,28 +193,17 @@ class Main extends Component {
     }else{
       return (
         <View style={styles.body}>
+          <ScrollView>
           <Text style={styles.name}> WELCOME </Text> 
 
       <TouchableOpacity>  
       <Text style={styles.logOutButton} onPress={() => this.props.navigation.navigate('Log Out')}> LOG OUT </Text>
       </TouchableOpacity>
 
-
       <Text style={styles.message}> What's your mind? You can share a post now with your friends! </Text> 
 
-      <Image
-                  source={{
-                  uri: this.state.photo,
-                  }}
-                  style={{
-               
-                  width: 100,
-                  height: 100,
-                  marginLeft:5,
-                  borderWidth: 3 
-                  }}
-                />
-
+      <Image source={{uri: this.state.photo,}}
+        style={{width: 100, height: 100, marginLeft:40,borderWidth: 3, borderColor: '#e3e327', marginTop: 20 }}/>
 
       <TextInput placeholder='Enter Your Post:' style={{fontSize: 24, backgroundColor: '#b8c427', width: 350, height: 60, marginLeft: 40, 
       marginTop: 45, borderWidth: 4, borderColor: '#FFFFFF'}}
@@ -341,24 +233,16 @@ class Main extends Component {
         <Text onPress={() => this.removePost(item.post_id)} style={styles.deletePostButton} > DELETE POST </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity> 
-        <Text onPress={() => this.likePost(item.post_id)} style={styles.likePostButton} > Like Post </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity> 
-        <Text onPress={() => this.removePostLike(item.post_id)} style={styles.removePostLikeButton} > Remove Like </Text>
-        </TouchableOpacity>
             </View>
         )}
           keyExtractor={(item,index) => item.post_id.toString()}/> 
-
+        </ScrollView>
         </View>
 
       );
      }
     }
   }
-
 
 const styles = StyleSheet.create({
   body: {
@@ -441,34 +325,6 @@ deletePostButton: {
   marginTop: -40,
   textAlign: 'center',
 },
-likePostButton: {
-  fontSize: 20,
-  color: '#10c90a',
-  backgroundColor: 'yellow',
-  width: 120,
-  height: 40, 
-  fontWeight: 'bold',
-  borderWidth:  4,  
-  borderColor:  '#e3e327',
-  marginLeft: 40,
-  marginTop: -10,
-  textAlign: 'center',
-},
-removePostLikeButton: {
-  fontSize: 20,
-  color: 'yellow',
-  backgroundColor: 'red',
-  width: 160,
-  height: 40, 
-  fontWeight: 'bold',
-  borderWidth:  4,  
-  borderColor:  '#e3e327',
-  marginLeft: 240,
-  marginTop: -50,
-  textAlign: 'center',
-},
-
-
 });
 
 export default Main;
