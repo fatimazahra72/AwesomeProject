@@ -55,34 +55,34 @@ logInAccount = async () => {
     <View style={styles.body}>
 
     { /* Sets the title of the social media */ }
-    <Text style={styles.name}> Spacebook </Text>
-    <img src={logo} style={{width: 40, height: 40, marginTop: -10, marginLeft: 365}}/>  
+      <Text style={styles.name}> Spacebook </Text>
+      <img src={logo} style={{width: 40, height: 40, marginTop: -10, marginLeft: 365}}/>  
 
     { /* Sets the title of the page */ }
-    <Text style={styles.title}> Account Log In </Text>
+      <Text style={styles.title}> Account Log In </Text>
 
     {/* Sets the title for the email address and the input box to obtain the entered email address results
      to check if the account exists on the server */}
-    <Text style={styles.title1}> EMAIL ADDRESS: </Text>
-    <TextInput placeholder='Enter Email:' style={{fontSize: 22, backgroundColor: '#fafa75', width: 350, height: 40, marginLeft: 40, 
-      marginTop: 10, borderWidth: 2.5, borderColor: '#FFFFFF'}}
-      onChangeText={value => this.setState({email: value})}
-      value={this.state.email}/>
+      <Text style={styles.title1}> EMAIL ADDRESS: </Text>
+      <TextInput placeholder='Enter Email:' style={{fontSize: 22, backgroundColor: '#fafa75', width: 350, height: 40, marginLeft: 40, 
+        marginTop: 10, borderWidth: 2.5, borderColor: '#FFFFFF'}}
+        onChangeText={value => this.setState({email: value})}
+        value={this.state.email}/>
 
     {/* Sets the title for the Password and the input box to obtain the entered password results
      to check if the password with the entered email address exists on the server */}
-    <Text style={styles.title2}> PASSWORD: </Text>
-    <TextInput placeholder='Enter Password:' style={{fontSize: 22, backgroundColor: '#fafa75', width: 350, height: 40, marginLeft: 40,
-      marginTop: 10, borderWidth: 2.5, borderColor: '#FFFFFF'}} 
-      secureTextEntry={true} onChangeText={value => this.setState({password: value})}
-      value={this.state.password}/>
+      <Text style={styles.title2}> PASSWORD: </Text>
+      <TextInput placeholder='Enter Password:' style={{fontSize: 22, backgroundColor: '#fafa75', width: 350, height: 40, marginLeft: 40,
+        marginTop: 10, borderWidth: 2.5, borderColor: '#FFFFFF'}} 
+        secureTextEntry={true} onChangeText={value => this.setState({password: value})}
+        value={this.state.password}/>
 
     {/* Sets the button for the log in action, the logInAccount function is used to check if the entered account 
     details are correct and if the details are correct then a user will be logged as the account exists
     on the server, providing the user with a log in a token */}
-    <TouchableOpacity> 
-      <Text onPress={() => this.logInAccount()} style={styles.logInButton} > LOG IN </Text>
-    </TouchableOpacity>
+      <TouchableOpacity> 
+        <Text onPress={() => this.logInAccount()} style={styles.logInButton} > LOG IN </Text>
+      </TouchableOpacity>
 
     </View>
     );
@@ -145,7 +145,6 @@ logInButton : {
   textAlign : 'center',
 },
 });
-
 
 export default LogIn;
 

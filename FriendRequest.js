@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Button } from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FlatList } from 'react-native-gesture-handler';
 
@@ -32,26 +32,26 @@ getData = async () => {
   const token = await AsyncStorage.getItem('@session_token');
   const id = await AsyncStorage.getItem('@session_id');
   return fetch("http://localhost:3333/api/1.0.0/friendrequests", {
-        headers: {
-          'X-Authorization':  token
-        },
-        method: 'GET',
-  })
+    headers: {
+      'X-Authorization':  token
+    },
+    method: 'GET',
+})
   .then((response) => {
-      if(response.status === 200){
-        return response.json()
-      }else if(response.status === 401){
-        this.props.navigation.navigate("Main");
-      }else{
-        throw 'Something went wrong';
-      }
-  })
+    if(response.status === 200){
+      return response.json()
+    }else if(response.status === 401){
+      this.props.navigation.navigate("Main");
+    }else{
+      throw 'Something went wrong';
+    }
+})
   .then((responseJson) => {
     this.setState({
       isLoading: false,
       friendsData: responseJson
     })
-  })
+})
   .catch((error) => {
     console.log(error);
   })
@@ -60,14 +60,14 @@ getData = async () => {
 checkLoggedIn = async () => {
   const value = await AsyncStorage.getItem('@session_token');
   if (value == null) {
-      this.props.navigation.navigate('LogIn');
+    this.props.navigation.navigate('LogIn');
   }
 };
 
 acceptFriends = async (user_id) => {
-const id = await AsyncStorage.getItem('@session_id');
-const token = await AsyncStorage.getItem('@session_token');
-return fetch("http://localhost:3333/api/1.0.0/friendrequests/"+ user_id, {    
+  const id = await AsyncStorage.getItem('@session_id');
+  const token = await AsyncStorage.getItem('@session_token');
+  return fetch("http://localhost:3333/api/1.0.0/friendrequests/"+ user_id, {    
     headers: {
       'Content-Type': 'application/json',
       'X-Authorization': token
@@ -76,11 +76,11 @@ return fetch("http://localhost:3333/api/1.0.0/friendrequests/"+ user_id, {
   })
 .then((response) => {
     if(response.status === 200){
-        console.log("Accepted the friend request");
+      console.log("Accepted the friend request");
     }else if(response.status === 401){
-        console.log("Error: No more friend requests to be accepted")
+      console.log("Error: No more friend requests to be accepted")
     }else{
-        throw 'Something went wrong';
+      throw 'Something went wrong';
     }
 })
   .catch((error) => {
@@ -89,9 +89,9 @@ return fetch("http://localhost:3333/api/1.0.0/friendrequests/"+ user_id, {
 }
 
 rejectFriend = async (user_id) => {
-const id = await AsyncStorage.getItem('@session_id');
-const token = await AsyncStorage.getItem('@session_token');
-return fetch("http://localhost:3333/api/1.0.0/friendrequests/"+ user_id, {    
+  const id = await AsyncStorage.getItem('@session_id');
+  const token = await AsyncStorage.getItem('@session_token');
+  return fetch("http://localhost:3333/api/1.0.0/friendrequests/"+ user_id, {    
     headers: {
       'Content-Type': 'application/json',
       'X-Authorization': token
@@ -100,11 +100,11 @@ return fetch("http://localhost:3333/api/1.0.0/friendrequests/"+ user_id, {
   })
 .then((response) => {
     if(response.status === 200){
-        console.log("Friend request has been rejected");
+      console.log("Friend request has been rejected");
     }else if(response.status === 401){
-        console.log("Error: No more friend requests to be accepted")
+      console.log("Error: No more friend requests to be accepted")
     }else{
-        throw 'Something went wrong';
+      throw 'Something went wrong';
     }
 })
   .catch((error) => {
@@ -115,39 +115,32 @@ return fetch("http://localhost:3333/api/1.0.0/friendrequests/"+ user_id, {
 render() {
   if (this.state.isLoading){
     return (
-      <View
-        style={{
-          flex: 1,
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: 200,
-          width: 100,
-        }}>
-        </View>
+      <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
+        height: 200, width: 100,}}>
+      </View>
     );
     }else{
       return (
         <View style={styles.body}>
           <Text style={styles.name}> YOUR OUTSTANDING FRIEND REQUESTS </Text> 
-        <FlatList
-        data = {this.state.friendsData}
-        renderItem={({item}) => (
+          <FlatList
+            data = {this.state.friendsData}
+            renderItem={({item}) => (
           <View>
           <Text style={{height:100, width: 320, height: 80, backgroundColor: '#858713', color: 'black', marginTop: 80, fontSize: 26, marginLeft: 55}}> 
-          Incoming Friend Requests: {item.first_name} {item.last_name}
+            Incoming Friend Requests: {item.first_name} {item.last_name}
           </Text>
 
-      <TouchableOpacity> 
-      <Text onPress={() => this.acceptFriends(item.user_id)} style={styles.acceptFriendButton} > Accept Request </Text>
-      </TouchableOpacity> 
+          <TouchableOpacity> 
+            <Text onPress={() => this.acceptFriends(item.user_id)} style={styles.acceptFriendButton} > Accept Request </Text>
+          </TouchableOpacity> 
 
-      <TouchableOpacity> 
-      <Text onPress={() => this.rejectFriend(item.user_id)} style={styles.rejectFriendButton} > Reject Request  </Text>
-      </TouchableOpacity>  
+          <TouchableOpacity> 
+            <Text onPress={() => this.rejectFriend(item.user_id)} style={styles.rejectFriendButton} > Reject Request  </Text>
+          </TouchableOpacity>  
           </View>
         )}
-         keyExtractor={(item,index) => item.user_givenname} /> 
+          keyExtractor={(item,index) => item.user_givenname} /> 
         </View>
       );
      }

@@ -1,8 +1,5 @@
-import React, { Component } from 'react';
-import { Text, View, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer, TabActions } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
 import LogIn from './LogIn';
 import SignUp from './SignUp';
 import Home from './Home';
@@ -11,7 +8,6 @@ import TabNavigator from './TabNavigation';
 import PostWall from './PostWall';
 import CameraImage from './Camera';
 import Followers from './Followers';
-import FriendsPic from './FriendsPic';
 
 
 const Stack = createNativeStackNavigator();
@@ -28,7 +24,6 @@ function navigator() {
       <Stack.Screen name="FriendsWall" component={PostWall} />
       <Stack.Screen name="Followers" component={Followers} />
       <Stack.Screen name="Camera" component={CameraImage} />
-      <Stack.Screen name="Friends Profile Pic" component={FriendsPic} />
     </Stack.Navigator>
     </NavigationContainer>
 );

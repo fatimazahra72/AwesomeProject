@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, TextInput, View, Button, StyleSheet, Title, TouchableOpacity, ScrollView } from 'react-native';
+import { Text, TextInput, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class ProfileEdit extends Component {
@@ -18,16 +18,14 @@ constructor(props){
     };
 }
 
-    updateFirstName = async() =>
-    {
+updateFirstName = async() => {
     const token = await AsyncStorage.getItem('@session_token');
     const id = await AsyncStorage.getItem('@session_id');
 
     let to_Send = {};       
-    if(this.state.first_name !=this.state.updated_first_name){
+        if(this.state.first_name !=this.state.updated_first_name){
             to_Send['first_name'] = this.state.first_name;
     }
-
     return fetch("http://localhost:3333/api/1.0.0/user/" + id,{ 
         method: 'PATCH', 
         headers: {
@@ -45,17 +43,16 @@ constructor(props){
         }else{
             throw "Something went wrong"
         }  
-    }).catch((error)=>{
-        console.log(error);
-  })
+    })
+    .catch((error)=>{
+    console.log(error);
+    })
 }
 
-    updateLastName = async() =>
-    {
+updateLastName = async() => {
     const token = await AsyncStorage.getItem('@session_token');
     const id = await AsyncStorage.getItem('@session_id');
-    let to_Send = {};       
-
+    let to_Send = {};
     if(this.state.last_name !=this.state.updated_last_name){
         to_Send['last_name'] = this.state.last_name;
     }
@@ -76,19 +73,18 @@ constructor(props){
             throw "Invalid: Last Name has already been used"
         }else{
             throw "Something went wrong"
-        }  
+         }  
     }).catch((error)=>{
         console.log(error);
-   })
+    })
 }
 
-    updateEmail = async() =>
-    {
+updateEmail = async() => {
     const token = await AsyncStorage.getItem('@session_token');
     const id = await AsyncStorage.getItem('@session_id');
     let to_Send = {};       
-    if(this.state.email !=this.state.updated_email){
-    to_Send['email'] = this.state.email;
+        if(this.state.email !=this.state.updated_email){
+        to_Send['email'] = this.state.email;
     }
 
     return fetch("http://localhost:3333/api/1.0.0/user/" + id,{ 
@@ -99,7 +95,6 @@ constructor(props){
         }, 
         body: JSON.stringify(to_Send) //stings the values in
     })
-
     .then((response)=>{
         if(response.status === 200){
             this.props.navigation.navigate("Log In");
@@ -108,49 +103,44 @@ constructor(props){
         }else{
             throw "Something went wrong"
         }  
-    }).catch((error)=>{
+    })
+    .catch((error)=>{
         console.log(error);
-   })
+    })
 }
 
 render(){
     return (
-    <View style={styles.body}>
-    <ScrollView>
-    <Text style={styles.name}> SPACEBOOK </Text>
-    <Text style={styles.title}> UPDATE YOUR ACCOUNT CREDENTIALS WHENEVER YOU WISH </Text> 
+        <View style={styles.body}>
+        <ScrollView>
+        <Text style={styles.name}> SPACEBOOK </Text>
+        <Text style={styles.title}> UPDATE YOUR ACCOUNT CREDENTIALS WHENEVER YOU WISH </Text> 
 
-        <TextInput
-        placeholder='Enter Updated First Name' 
-        style={{fontSize: 22, backgroundColor: '#b8c427', width: 350, height: 40, marginLeft: 40, 
-        marginTop: 20, borderWidth: 4, borderColor: '#FFFFFF'}}
-        onChangeText={value => this.setState({first_name:value})}
-        value={this.state.first_name}
-        />
+        <TextInput placeholder='Enter Updated First Name' 
+            style={{fontSize: 22, backgroundColor: '#b8c427', width: 350, height: 40, marginLeft: 40, 
+            marginTop: 20, borderWidth: 4, borderColor: '#FFFFFF'}}
+            onChangeText={value => this.setState({first_name:value})}
+            value={this.state.first_name} />
 
         <TouchableOpacity>
             <Text onPress={()=> this.updateFirstName()} style={styles.firstNameButton}> Update First Name </Text>
         </TouchableOpacity>
 
-        <TextInput
-        placeholder='Enter Updated Last Name' 
-        style={{fontSize: 22, backgroundColor: '#b8c427', width: 350, height: 40, marginLeft: 40, 
-        marginTop: 20, borderWidth: 4, borderColor: '#FFFFFF'}}
-        onChangeText={value => this.setState({last_name:value})}
-        value={this.state.last_name}
-        />
+        <TextInput placeholder='Enter Updated Last Name' 
+            style={{fontSize: 22, backgroundColor: '#b8c427', width: 350, height: 40, marginLeft: 40, 
+            marginTop: 20, borderWidth: 4, borderColor: '#FFFFFF'}}
+            onChangeText={value => this.setState({last_name:value})}
+            value={this.state.last_name} />
 
         <TouchableOpacity>
             <Text onPress={()=> this.updateLastName()} style={styles.lastNameButton}> Update Last Name </Text>
         </TouchableOpacity>
 
-        <TextInput
-        placeholder='Enter new Email Address' 
-        style={{fontSize: 22, backgroundColor: '#b8c427', width: 350, height: 40, marginLeft: 40, 
-        marginTop: 20, borderWidth: 4, borderColor: '#FFFFFF'}}
-        onChangeText={value => this.setState({email:value})}
-        value={this.state.email}
-        />
+        <TextInput placeholder='Enter new Email Address' 
+            style={{fontSize: 22, backgroundColor: '#b8c427', width: 350, height: 40, marginLeft: 40, 
+            marginTop: 20, borderWidth: 4, borderColor: '#FFFFFF'}}
+            onChangeText={value => this.setState({email:value})}
+            value={this.state.email} />
 
         <TouchableOpacity>
             <Text onPress={()=> this.updateEmail()} style={styles.emailButton}> Update Email Address </Text>
@@ -161,7 +151,6 @@ render(){
         </TouchableOpacity>
         </ScrollView>
         </View>
-        
         )
     }
 }

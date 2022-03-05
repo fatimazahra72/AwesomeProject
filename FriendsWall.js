@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
-import {View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Button } from 'react-native';
+import {View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FlatList } from 'react-native-gesture-handler';
-import PostWall from './PostWall';
 
 class FriendsWall extends Component {
   constructor(props){
@@ -18,141 +17,106 @@ class FriendsWall extends Component {
       id: '',
       user_id: '',
       search_string: '',
+      photo: null
     }
   }
   
-  componentDidMount() {
-    this.unsubscribe = this.props.navigation.addListener('focus', () => {
-      this.checkLoggedIn();
-    });
-    this.getData();
+componentDidMount() {
+  this.unsubscribe = this.props.navigation.addListener('focus', () => {
+    this.checkLoggedIn();
+  });
+  this.getData();
+}
+
+componentWillUnmount() {
+  this.unsubscribe();
+}
+
+getData = async () => {
+  const token = await AsyncStorage.getItem('@session_token');
+  const id = await AsyncStorage.getItem('@session_id');
+  return fetch("http://localhost:3333/api/1.0.0/search?search_in=friends&q=" + this.state.search_string, {
+    headers: {
+      'X-Authorization':  token,
+    },
+      method: 'GET',
+    })
+    .then((response) => {
+      if(response.status === 200){
+        return response.json()
+      }else if(response.status === 400){
+        this.props.navigation.navigate("Log In");
+      }else{
+        throw 'Something went wrong';
+      }
+   })
+    .then((responseJson) => {
+      this.setState({
+        isLoading: false,
+        friendsData: responseJson
+      })
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+}
+
+checkLoggedIn = async () => {
+  const value = await AsyncStorage.getItem('@session_token');
+  if (value == null) {
+    this.props.navigation.navigate('Log In');
   }
-
-  componentWillUnmount() {
-    this.unsubscribe();
-  }
-
-  getData = async () => {
-    const token = await AsyncStorage.getItem('@session_token');
-    const id = await AsyncStorage.getItem('@session_id');
-    return fetch("http://localhost:3333/api/1.0.0/search?search_in=friends&q=" + this.state.search_string, {
-          headers: {
-            'X-Authorization':  token,
-          },
-          method: 'GET',
-        })
-        .then((response) => {
-            if(response.status === 200){
-                return response.json()
-            }else if(response.status === 400){
-              this.props.navigation.navigate("Log In");
-            }else{
-                throw 'Something went wrong';
-            }
-        })
-        .then((responseJson) => {
-          this.setState({
-            isLoading: false,
-            friendsData: responseJson
-          })
-        })
-        .catch((error) => {
-          console.log(error);
-        })
-  }
-
-  checkLoggedIn = async () => {
-    const value = await AsyncStorage.getItem('@session_token');
-    if (value == null) {
-        this.props.navigation.navigate('Log In');
-    }
-  };
-
-  // get_friends_count = async () => {
-  // const {user_id} = this.props.route.params;
-  //  // const id = await AsyncStorage.getItem('@session_id');
-  //   const token = await AsyncStorage.getItem('@session_token');
-  //   return fetch("http://localhost:3333/api/1.0.0/user/"+ user_id + "/friends", {    
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'X-Authorization': token
-  //       },
-  //       method: 'GET',// Uses the POST method as the user wants to log in
-  //     })
-  //   .then((response) => {
-  //       if(response.status === 200){
-  //           console.log("Friend Count is Shown has been uploaded successful");
-  //           this.getData();
-  //       }else if(response.status === 401){
-  //           console.log("Error: Could not upload post")
-  //       }else{
-  //           throw 'Something went wrong';
-  //       }
-  //   })
-  //     .catch((error) => {
-  //       console.log(error);
-  //       //this.getData();
-  //     })
-  // }
+};
 
 
-  render() {
-    if (this.state.isLoading){
-      return (
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: 200,
-            width: 100,
-          }}>
-          </View>
+render() {
+  if (this.state.isLoading){
+    return (
+      <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
+        height: 200, width: 100,}}>
+      </View>
       );
     }else{
       return (
         <View style={styles.body}>
+          <ScrollView>
           <Text style={styles.title}> VIEW FOLLOWERS </Text> 
 
         <TextInput placeholder='Search Your Friends:' style={{fontSize: 22, backgroundColor: '#b8c427', width: 350, height: 40, marginLeft: 40, 
-        marginTop: 60, borderWidth: 4, borderColor: '#FFFFFF'}}
-        value={this.state.search_string} onChangeText={value => this.setState({search_string: value})}/>
+          marginTop: 60, borderWidth: 4, borderColor: '#FFFFFF'}}
+          value={this.state.search_string} onChangeText={value => this.setState({search_string: value})}/>
 
-      <TouchableOpacity> 
-      <Text onPress={() => this.getData()} style={styles.search} > Search </Text>
-      </TouchableOpacity> 
+        <TouchableOpacity> 
+          <Text onPress={() => this.getData()} style={styles.search} > Search </Text>
+        </TouchableOpacity> 
 
-      <FlatList 
-        data = {this.state.friendsData}
-        renderItem={({item}) => (
-      <View>
-      <Text style={{height:30, width: 260, backgroundColor: '#858713', color: 'black', marginTop: 50, marginLeft: 75, fontSize: 22}}> 
-        User Name: {item.user_givenname} {item.user_familyname} 
-      </Text> 
 
-      <TouchableOpacity>  
-      <Text style={styles.viewPosts} onPress={() => this.props.navigation.navigate('FriendsWall', {user_id: item.user_id})} > View Posts </Text>
-      </TouchableOpacity>
+        <FlatList 
+          data = {this.state.friendsData}
+          renderItem={({item}) => (
+        <View>
 
-      <TouchableOpacity>  
-      <Text style={styles.viewFriends} onPress={() => this.props.navigation.navigate('Followers', {user_id: item.user_id})} > View User Friends </Text>
-      </TouchableOpacity>
+        <Text style={{height:30, width: 260, backgroundColor: '#858713', color: 'black', marginTop: 50, marginLeft: 75, fontSize: 22}}> 
+          User Name: {item.user_givenname} {item.user_familyname} 
+        </Text> 
 
-      <TouchableOpacity>  
-      <Text style={styles.viewFriends} onPress={() => this.props.navigation.navigate('Friends Profile Pic', {user_id: item.user_id})} > View User Friends </Text>
-      </TouchableOpacity>
+        <TouchableOpacity>  
+          <Text style={styles.viewPosts} onPress={() => this.props.navigation.navigate('FriendsWall', {user_id: item.user_id})} > View Posts </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity>  
+          <Text style={styles.viewFriends} onPress={() => this.props.navigation.navigate('Followers', {user_id: item.user_id})} > View User Friends </Text>
+        </TouchableOpacity>
           
-          </View>
-        )}
-          keyExtractor={(item,index) => item.user_givenname}/> 
         </View>
-
+        )}
+            keyExtractor={(item,index) => item.user_givenname}/> 
+        </ScrollView>
+        </View>
       );
      }
     }
   }
-
 
 const styles = StyleSheet.create({
   body: {
@@ -215,6 +179,20 @@ viewFriends: {
   textAlign: 'center',
   borderRadius: 20,
 },
+viewProfilePic: {
+  fontSize: 22,
+  color: '#FFFFFF',
+  backgroundColor: '#5f9e06',
+  width: 180,
+  height: 110, 
+  fontWeight: 'bold',
+  borderWidth:  3,  
+  borderColor:  '#e3e327',
+  marginLeft: 120,
+  marginTop: 40,
+  textAlign: 'center',
+  borderRadius: 20,
+}
 });
 
 export default FriendsWall;

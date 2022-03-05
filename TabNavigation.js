@@ -1,4 +1,3 @@
-import React, { Component } from 'react';
 import { StyleSheet, Image} from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Main from './Main';

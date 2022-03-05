@@ -14,67 +14,63 @@ class CameraImage extends Component {
     };
   }
 
-  async componentDidMount() {
-    const { status } = await Camera.requestCameraPermissionsAsync();
-    this.setState({ hasPermission: status === 'granted' });
+async componentDidMount() {
+  const { status } = await Camera.requestCameraPermissionsAsync();
+  this.setState({ hasPermission: status === 'granted' });
+}
+
+takePicture = async () => {
+  console.log('Picture no.1');
+  if (this.camera) {
+    console.log('Picture no.2');
+    const options = {
+      quality: 0.5,
+      base64: true,
+      onPictureSaved: (data) => this.sendToServer(data),
+    };
+    await this.camera.takePictureAsync(options);
   }
+};
 
-  takePicture = async () => {
-    console.log('Picture no.1');
-    if (this.camera) {
-      console.log('Picture no.2');
-      const options = {
-        quality: 0.5,
-        base64: true,
-        onPictureSaved: (data) => this.sendToServer(data),
-      };
-      await this.camera.takePictureAsync(options);
-    }
-  };
+sendToServer = async (data) => {
+  console.log(data.base64);
+  const id = await AsyncStorage.getItem('@session_id');
+  const token = await AsyncStorage.getItem('@session_token');
 
-  sendToServer = async (data) => {
-    console.log(data.base64);
-    const id = await AsyncStorage.getItem('@session_id');
-    const token = await AsyncStorage.getItem('@session_token');
+  const res = await fetch(data.base64);
+  const blob = await res.blob();
 
-    const res = await fetch(data.base64);
-    const blob = await res.blob();
-
-    return fetch("http://localhost:3333/api/1.0.0/user/"+id+"/photo", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'image/png',
-        'X-Authorization': token,
-      },
-      body: blob,
-    })
-      .then((response) => {
-        console.log('Picture uploaded', response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  return fetch("http://localhost:3333/api/1.0.0/user/"+id+"/photo", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'image/png',
+      'X-Authorization': token,
+    },
+    body: blob,
+  })
+  .then((response) => {
+    console.log('Picture uploaded', response);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+};
 
   render() {
-    // eslint-disable-next-line react/destructuring-assignment
     if (this.state.hasPermission) {
       return (
-        <Camera
-          style={styles.camera}
+        <Camera style={styles.camera}
           type={this.state.type}
           ref={(ref) => this.camera = ref}>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => {
-                this.takePicture();
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button}
+            onPress={() => {
+            this.takePicture();
               }}>
-              <Text style={styles.text}> Take Profile Pic </Text>
-            </TouchableOpacity>
+          <Text style={styles.text}> Take Profile Pic </Text>
+          </TouchableOpacity>
           </View>
-        </Camera>
-
+        </Camera> 
       );
     }
     return (
@@ -84,27 +80,27 @@ class CameraImage extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  camera: {
-    flex: 1,
-  },
-  buttonContainer: {
-    flex: 1,
-    backgroundColor: 'transparent',
-    flexDirection: 'row',
-    margin: 20,
-  },
-  button: {
-    flex: 0.1,
-    alignSelf: 'flex-end',
-    alignItems: 'center',
-  },
-  text: {
-    fontSize: 18,
-    color: 'white',
-  },
+container: {
+  flex: 1,
+},
+camera: {
+  flex: 1,
+},
+buttonContainer: {
+  flex: 1,
+  backgroundColor: 'transparent',
+  flexDirection: 'row',
+  margin: 20,
+},
+button: {
+  flex: 0.1,
+  alignSelf: 'flex-end',
+  alignItems: 'center',
+},
+text: {
+  fontSize: 18,
+  color: 'white',
+},
 });
 
 export default CameraImage;

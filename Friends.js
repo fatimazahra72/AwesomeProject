@@ -40,23 +40,23 @@ getData = async () => {
     },
     method: 'GET',
   })
-.then((response) => {
-  if(response.status === 200){
-    return response.json()
-  }else if(response.status === 400){
-    this.props.navigation.navigate("Main");
-  }else{
-    throw 'Something went wrong';
-    }
-  })
-.then((responseJson) => {
-  this.setState({
-    isLoading: false,
-    friendsData: responseJson
+  .then((response) => {
+    if(response.status === 200){
+      return response.json()
+    }else if(response.status === 400){
+      this.props.navigation.navigate("Main");
+    }else{
+      throw 'Something went wrong';
+      }
     })
-  })
-.catch((error) => {
-  console.log(error);
+  .then((responseJson) => {
+    this.setState({
+      isLoading: false,
+      friendsData: responseJson
+      })
+    })
+  .catch((error) => {
+    console.log(error);
   })
 }
 
@@ -71,38 +71,31 @@ addFriends = async (user_id) => {
   const id = await AsyncStorage.getItem('@session_id');
   const token = await AsyncStorage.getItem('@session_token');
   return fetch("http://localhost:3333/api/1.0.0/user/"+ user_id +"/friends", {    
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Authorization': token,
-      },
-      method: 'POST',// Uses the POST method as the user wants to log in
-    })
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Authorization': token,
+    },
+    method: 'POST',// Uses the POST method as the user wants to log in
+  })
   .then((response) => { 
-      if(response.status === 200){
-          console.log("Friend request has been submitted");
-      }else if(response.status === 401){
-          console.log("Error: Could not add friend")
-      }else if (response.status=== 403){
-          console.log("Something went wrong");
+    if(response.status === 200){
+      console.log("Friend request has been submitted");
+    }else if(response.status === 401){
+      console.log("Error: Could not add friend")
+    }else if (response.status=== 403){
+      console.log("Something went wrong");
       }
   })
-    .catch((error) => {
-      console.log(error);
-    })
-  }
+  .catch((error) => {
+    console.log(error);
+  })
+}
 
   render() {
     if (this.state.isLoading){
       return (
-        <View
-        style={{
-          flex: 1,
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: 200,
-          width: 100,
-          }}>
+        <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
+          height: 200, width: 100, }}>
         </View>
       );
     }else{
@@ -110,29 +103,28 @@ addFriends = async (user_id) => {
         <View style={styles.body}>
         <Text style={styles.title}> SEND FRIEND REQUESTS TO ADD MAKE ONLINE CONNECTIONS </Text> 
 
-      <TextInput placeholder='Enter Username to Add Friend:' style={{fontSize: 22, backgroundColor: '#b8c427', width: 350, height: 40, marginLeft: 40, 
-        marginTop: 60, borderWidth: 4, borderColor: '#FFFFFF'}}
-        value={this.state.search_string} onChangeText={value => this.setState({search_string: value})}/>
+        <TextInput placeholder='Enter Username to Add Friend:' style={{fontSize: 22, backgroundColor: '#b8c427', width: 350, height: 40, marginLeft: 40, 
+          marginTop: 60, borderWidth: 4, borderColor: '#FFFFFF'}}
+          value={this.state.search_string} onChangeText={value => this.setState({search_string: value})}/>
 
-      <TouchableOpacity> 
-      <Text onPress={() => this.getData()} style={styles.search} > Search </Text>
-      </TouchableOpacity> 
+        <TouchableOpacity> 
+          <Text onPress={() => this.getData()} style={styles.search} > Search </Text>
+        </TouchableOpacity> 
 
-      
-      <FlatList
-        data = {this.state.friendsData}
-        renderItem={({item}) => (
-      <View>
-      <Text style={{height:20, width: 200, backgroundColor: '#858713', color: 'black', marginTop: 20, marginLeft: 110}}> 
-        User Name: {item.user_givenname} {item.user_familyname}
-      </Text>
+        <FlatList
+          data = {this.state.friendsData}
+          renderItem={({item}) => (
+        <View>
+        <Text style={{height:20, width: 200, backgroundColor: '#858713', color: 'black', marginTop: 20, marginLeft: 110}}> 
+          User Name: {item.user_givenname} {item.user_familyname}
+        </Text>
             
-      <TouchableOpacity> 
-      <Text onPress={() => this.addFriends(item.user_id)} style={styles.addFriendsButton} > Send Friend Request </Text>
-      </TouchableOpacity> 
+        <TouchableOpacity> 
+          <Text onPress={() => this.addFriends(item.user_id)} style={styles.addFriendsButton} > Send Friend Request </Text>
+        </TouchableOpacity> 
       </View>
       )}
-        keyExtractor={(item,index) => item.user_givenname}/> 
+         keyExtractor={(item,index) => item.user_givenname}/> 
       </View>
       );
      }
