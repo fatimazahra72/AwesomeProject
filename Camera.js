@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -40,7 +39,7 @@ sendToServer = async (data) => {
   const res = await fetch(data.base64);
   const blob = await res.blob();
 
-  return fetch("http://localhost:3333/api/1.0.0/user/"+id+"/photo", {
+  return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/photo", {
     method: 'POST',
     headers: {
       'Content-Type': 'image/png',

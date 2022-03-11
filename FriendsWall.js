@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+// Imports the async storage, where account data can be stored e.g., session id and token
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FlatList } from 'react-native-gesture-handler';
 
@@ -7,8 +8,8 @@ class FriendsWall extends Component {
   constructor(props){
     super(props);
     this.state = {
+    // Sets all the properties that will be used to provide results of friends details
       isLoading: true,
-      postData : [],
       friendsData: [],
       text : '',
       post: '',
@@ -25,16 +26,18 @@ componentDidMount() {
   this.unsubscribe = this.props.navigation.addListener('focus', () => {
     this.checkLoggedIn();
   });
-  this.getData();
+  this.searchMyFriends();
 }
 
 componentWillUnmount() {
   this.unsubscribe();
 }
 
-getData = async () => {
+// A function which allows the user to search for the users they have added as friends 
+searchMyFriends = async () => {
   const token = await AsyncStorage.getItem('@session_token');
   const id = await AsyncStorage.getItem('@session_id');
+  // The API request which is sent to allow the users to use the query search to find friends they have added
   return fetch("http://localhost:3333/api/1.0.0/search?search_in=friends&q=" + this.state.search_string, {
     headers: {
       'X-Authorization':  token,
@@ -42,10 +45,12 @@ getData = async () => {
       method: 'GET',
     })
     .then((response) => {
+      // If search has been completed then the results of the user details will be displayed
       if(response.status === 200){
         return response.json()
+        // Else, if the result cannot be found then, the user will be returned to the main screen
       }else if(response.status === 400){
-        this.props.navigation.navigate("Log In");
+        this.props.navigation.navigate("Main");
       }else{
         throw 'Something went wrong';
       }
@@ -79,18 +84,23 @@ render() {
     }else{
       return (
         <View style={styles.body}>
-          <ScrollView>
-          <Text style={styles.title}> VIEW FOLLOWERS </Text> 
-
+        <ScrollView>
+          {/* The title of the page */}
+        <Text style={styles.title}> VIEW FOLLOWERS </Text> 
+          {/* A text input box in which the user can enter a name of the friend they would like to search for from their friends list,
+          then a result will be shown accordingly */}
         <TextInput placeholder='Search Your Friends:' style={{fontSize: 22, backgroundColor: '#b8c427', width: 350, height: 40, marginLeft: 40, 
           marginTop: 60, borderWidth: 4, borderColor: '#FFFFFF'}}
           value={this.state.search_string} onChangeText={value => this.setState({search_string: value})}/>
 
+        {/* The corresponding search friends function will be called to search for the user name  entered 
+        within the input box and display it if the user exists in your riends list  */}
         <TouchableOpacity> 
-          <Text onPress={() => this.getData()} style={styles.search} > Search </Text>
+          <Text onPress={() => this.searchMyFriends()} style={styles.search} > Search </Text>
         </TouchableOpacity> 
 
-
+        {/* A flatlist created to c=obtain data from the friends data array and then, display the account information 
+        such as first and last name of the friends that the user could possibly be searching for */}
         <FlatList 
           data = {this.state.friendsData}
           renderItem={({item}) => (
@@ -100,14 +110,17 @@ render() {
           User Name: {item.user_givenname} {item.user_familyname} 
         </Text> 
 
+        {/* A button that is linked to the stack navigation, this allows you to navigate to the Friends Wall page, where the user can
+        view their friends posts; like and dislike them. Also, the user can post on their friends wall here */}
         <TouchableOpacity>  
           <Text style={styles.viewPosts} onPress={() => this.props.navigation.navigate('FriendsWall', {user_id: item.user_id})} > View Posts </Text>
         </TouchableOpacity>
 
+        {/* A button that is linked to the followers page via the stack navigation, when the user clicks on 
+        this button they'll be able to view the followers of the users that are their friends*/}
         <TouchableOpacity>  
           <Text style={styles.viewFriends} onPress={() => this.props.navigation.navigate('Followers', {user_id: item.user_id})} > View User Friends </Text>
         </TouchableOpacity>
-          
         </View>
         )}
             keyExtractor={(item,index) => item.user_givenname}/> 
@@ -117,7 +130,8 @@ render() {
      }
     }
   }
-
+  
+// A StyleSheet is declared to format the components
 const styles = StyleSheet.create({
   body: {
   backgroundColor: '#60BEB0',

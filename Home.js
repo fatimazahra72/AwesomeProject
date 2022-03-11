@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+// Calls an image to be used from the assets folder 
 import logo from './assets/logo.png';
 
 class Home extends Component {
@@ -7,15 +8,14 @@ class Home extends Component {
     return (
       <View style={styles.body}>
       <img src={logo} style={{width: 80, height: 80, marginTop: 40, marginLeft: 270}}/>  
-      <Text style={styles.name}> WELCOME TO SPACEBOOK </Text>
-         {/* The title for the page - add the background style to view */}
-  
-        {/* Sets a button with the touch opacity, this button performs an action with the signUpAccount function and collects
-        data from the input fields to register the user account on the server and return an authentication id*/}       
+      {/* The title for the page */}
+      <Text style={styles.name}> WELCOME TO SPACEBOOK </Text>  
+        {/* Sets a button with the touch opacity, which allows the user to navigate to the Sign Up page to register a
+        user account or the Log In page if a user account it has already been created */}       
       <TouchableOpacity> 
         <Text style={styles.logInAccess} onPress={() => this.props.navigation.navigate('Log In')}> LOG IN </Text>
       </TouchableOpacity>
-      
+
       <TouchableOpacity> 
         <Text style={styles.signUpAccess} onPress={() => this.props.navigation.navigate('Sign Up')}> CREATE A NEW ACCOUNT </Text>
       </TouchableOpacity>
@@ -24,7 +24,7 @@ class Home extends Component {
     }
   }
   
-  // A StyleSheet is declared to format the components above such as titles and buttons
+// A StyleSheet is declared to format the components above such as titles and buttons
   const styles = StyleSheet.create({
 body : {
     backgroundColor: '#60BEB0',
